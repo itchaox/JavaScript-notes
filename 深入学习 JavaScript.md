@@ -135,6 +135,97 @@
         var jsString = 'var name = "itchao"; console.log(name);'
         eval(jsString)
         ```
+      
+    * 严格模式下的this
+  
+      * 在严格模式下,自执行函数(默认绑定)会指向undefined
+      * 之前编写的代码中,自执行函数我们是没有使用过this直接去引用window
 
-  * 
+#### 第九课、深入学习对象
+
+* JavaScript其实支持多重编程范式的,包括**函数式编程和面向对象编程**:
+
+  * Javascript中的对象被设计成一组**属性的无序集合**,像是一个**哈希表**,由key和value组成
+  * **key是一个标识符名称,value可以说任意类型**,也可以事**其他对象或者函数类型**
+  * 如果值是**一个函数**,那么我们可以称之为是**对象的函数**
+
+* 创建对象的方式:
+
+  * 方式一:通过new Object( )创建
+
+    * ```javascript
+      var obj = new Object()
+      obj.name = 'itchao'
+      obj.age = 18
+      obj.height = 1.85
+      obj.eat = function (){
+        console.log('吃东西')
+      }
+      obj.eat()
+      ```
+
+  * 方式二:通过字面量创建
+
+    * ```javascript
+      var itchao = {
+        name:'chao',
+        age:18,
+        height:1.88,
+        eat:function (){
+          console.log('在吃冰淇淋!')
+        }
+      }
+      itchao.eat()
+
+* Object.defineProperty()方法
+
+  * 会直接在一个对象上定义一个新属性,或者修改一个对象的现有属性,并返回此对象
+
+  * ```javascript
+    Object.defineProperty(obj, prop, descriptor)
+    ```
+
+  * 可接收三个参数:
+
+    * obj:要定义属性的对象
+    * prop:要定义或者修改的属性的名称或者Symbol
+    * descriptor:要定义或修改的属性描述符)(属性描述符是一个对象)
+
+  * 返回值:
+
+    * 被传递给函数的对象
+
+  * 用法:
+
+    * ```javascript
+      var itchao = {
+        name:'chao',
+        age:18,
+        height:1.88
+      }
+      console.log(itchao)
+      Object.defineProperty(itchao, "name",{
+        value:'kobe'
+      })
+      console.log(itchao)
+      ```
+
+* 数据属性描述符:(有如下四个特性)
+
+  * [[Configurable]]:表示属性是否可以通过delete删除属性,是否可以修改它的特性,或是否可以将它修改为存取属性描述符
+    * 当我们直接在一个对象上定义某个属性时,这个属性的[[Configurable]]默认为**true**
+    * 当我们通过属性描述符定义一个属性时,这个属性的[[Configurable]]默认为**false**
+  * [[Enumerable]]:表示属性是否可以通过for-in或者Object.keys()返回该属性
+    * 当我们直接在一个对象上定义某个属性时,这个属性的[[Enumerable]]默认为**true**
+    * 当我们通过属性描述符定义一个属性时,这个属性的[[Enumerable]]默认为**false**
+  * [[Writable]]:表示是否可以修改属性的值
+    * 当我们直接在一个对象上定义某个属性时,这个属性的[[Writable]]默认为**true**
+    * 当我们通过属性描述符定义一个属性时,这个属性的[[Writable]]默认为**false**
+  * [[value]]:属性的value值,读取属性时会返回该值,修改属性时,会对其进行修改
+    * 默认情况下这个值是**undefined**
+
+* 存储属性描述符:
+
+  * 隐藏某一个私有属性不希望直接被外界使用和赋值
+  * 如果我们希望截获一个属性它访问和设置值得过程时,也会使用存储属性描述符
 
