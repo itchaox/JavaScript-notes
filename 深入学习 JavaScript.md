@@ -1,10 +1,166 @@
 # 深入学习 JavaScript
 
+#### 第一课 浏览器的工作原理和V8引擎
+
 * V8引擎
   1. 代码被解析,v8引擎内部会创建一个对象(GlobalObject -> go)
   2. 运行代码
      * v8为了执行代码,v8yinqi八引擎内部会有一个执行上下文栈(Execution Context Stack,ECStack)(函数调用栈)
      * 执行全局代码时,为了全局代码能够正常的执行,需要创建全局执行上下文(Global Execution Context)(全局代码需要被执行时才会创建 )
+
+---
+
+#### 第二课 内存管理和内存泄漏
+
+* 查找变量的规则：
+
+  * 真实的查找路径是沿着**作用域链依次向上查找**
+
+  * 例子：
+
+    * ```javascript
+      var name = 'itchao'
+      
+      foo(123)
+      function foo(num){
+          console.log(m)
+          var m = 20
+          var n = 30
+          var name = 'foo'
+          console.log(name)  //  输出结果：foo
+      }
+      console.log(name)  // 输出结果：itchao
+      ```
+
+  * 函数嵌套：
+
+    * ```javascript
+      var name = 'kobe'
+      
+      player(234)
+      function player(num){
+          console.log(age)  // 输出结果：undefined
+          var age = 18
+          var number = 8
+          function man(){
+              console.log(name)  // 输出结果：kobe
+          }
+          man()
+      }
+      ```
+
+  * 函数调用函数的执行过程：
+
+    * ```javascript
+      // 函数调用函数的执行过程
+      // 函数的父级作用域和它的定义位置有关系，与调用位置无关系
+      var name ='kobe'
+      
+      function foo(){
+          console.log(name)  // 输出结果：kobe
+      }
+      
+      function bar(){
+          var name = 'itchao'
+          foo()
+      }
+      
+      bar()
+      ```
+
+* 作用域提升面试题：
+
+  * 作用域补充：
+
+    * ```javascript
+      // 作用域补充
+      function foo(){
+          // var m = 100  //  这样写会报错：未定义变量m，因为这里定义的是局部变量，外界无法进行访问
+          m = 100  // 前面没写var相当于是全局变量，外界可以进行访问(但是建议不要这样写，不符合规范！面试可能会问，知道就行！)
+      }
+      
+      foo()
+      console.log(m)
+      ```
+
+  * 面试题一：
+
+    * ```javascript
+      // 面试题一
+      var n = 100
+      function foo(){
+        n = 200
+      }
+      foo()
+      
+      console.log(n)  // 输出结果：200
+      ```
+
+  * 面试题二：
+
+    * ```javascript
+      // 面试题二
+      function foo(){
+          console.log(n)  // 输出结果：undefined(原因：存在AO，有变量提升)
+          var n = 200
+          console.log(n)  // 输出结果：200
+      }
+      
+      var n =100
+      foo()
+      ```
+
+  * 面试题三：
+
+    * ```javascript
+      // 面试题三
+      var n = 100
+      function foo1(){
+          console.log(n)  // 输出结果：100（原因：函数的父级作用域是在定义的时候就决定好了，和调用位置无关）
+      }
+      
+      function foo2(){
+          var n = 200
+          console.log(n)  // 输出结果：200（原因：查找变量按照作用域链依次向上查找）
+          foo1()
+      }
+      
+      foo2()
+      console.log(n)  // 输出结果：100（原因：查找变量按照作用域链依次向上查找）
+      ```
+
+  * 面试题四：
+
+    * ```javascript
+      // 面试题四
+      var a = 100
+      function foo(){
+          console.log(a)  // 输出结果：undefined（原因：函数在运行前会编译，编译的时候a为undefined，AO:{a:undefined}）
+          return  // 退出函数 
+          var a = 100
+      }
+      
+      foo()
+      ```
+
+  * 面试题五：
+
+    * ```javascript
+      // 面试题五
+      function foo(){
+          var a = b = 100
+          // 转成下面两行代码
+          // var a = 100
+          // b = 100
+      }
+      
+      foo()
+      
+      console.log(a)  // 输出结果：报错，未定义变量a，因为这里的a是定义的局部变量
+      console.log(b)  // 输出结果：100
+      ```
+
+---
 
 #### 第八课 基于对象的封装、原型链
 
