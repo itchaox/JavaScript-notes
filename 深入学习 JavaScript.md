@@ -192,10 +192,174 @@
       * 当一个对象有一个引用指向它时,那么这个对象的引用就+1
       * 当引用计数变为0的时候就认为不需要这个变量了,然后进行垃圾回收
       * 存在弊端:循环引用(两个对象之间互相引用,永远无法进行垃圾回收,会造成内存泄露)
-    * 标记清除:
+    * **标记清除:**
       * 概念:这个算法是设置一个根对象(root object),垃圾回收器会定期从这个根开始,找所有从根开始有引用到的对象,对于哪些没有引用到的对象,就认为是不可用的对象
       * 这个算法可以很好的解决循环引用到问题
     * JS引擎比较广泛的采用的就是**标记清除算法,**当然类型于V8引擎为了进行更好的优化,它在算法的实现细节上也会结合一些其他的算法
+
+---
+
+#### 第三课 作用域、作用域提升、执行上下文
+
+##### JavaScript函数内容（重要）
+
+* JS中函数是一等公民
+  * 在JavaScript中，函数是非常重要的，并且是一等公民：
+    * 意味着函数的使用是非常灵活的
+    * 函数可以作为另外一个函数的参数，也可以作为另外一个函数的返回值来使用
+  * 自己编写高级函数
+  * 使用内置的高阶函数
+
+* 函数作为参数的使用案例：
+
+  * ```javascript
+    // 函数的基本使用
+    function foo(val){
+        console.log('itchao',val)
+    }
+    foo(321)
+    
+    // 将函数作为另外一个函数的参数
+    function add(math){  // math这里是形参，可以自定义
+        math()
+    }
+    
+    function sum(){
+        console.log('求和函数！')
+    }
+    add(sum)
+    
+    // 函数作为参数的使用案例
+    function calc(num1, num2, calcFn){
+        console.log(calcFn(num1, num2))
+    }
+    
+    function add(num1, num2){
+        return num1 + nu
+    }
+    
+    function sub(num1, num2){
+        return num1 - num2
+    }
+    
+    function mul(num1, num2){
+        return num1 * num2
+    }
+    
+    var m = 20
+    var n = 80
+    calc(m, n, add)
+    calc(m, n, sub)
+    calc(m, n, mul)
+    ```
+
+* 函数作为返回值的使用：
+
+  * ```javascript
+    // js语法允许函数内部再定义函数
+    function foo(){
+        function bar(){
+            console.log('hello itchao')
+        }
+        // bar()  // 这里不直接执行函数
+        // return bar() // 不要这样写，这样写是执行这个函数，把这个函数返回出去了，这里是需要直接返回这个函数
+        return bar  // 把函数直接返回出去
+    }
+    var fn = foo()  // 用fn变量来接受返回出来的bar()函数
+    fn()  // 调用fn() 函数
+    
+    
+    // 使用场景案例(通过传入的参数，定制函数)
+    function makeAdder(count){
+        function add(num){
+            return count + num
+        }
+        return add
+    }
+    var add30 = makeAdder(30)
+    console.log(add30(70))
+    console.log(add30(150))
+    // 高阶函数：把一个函数如果接受另外一个函数作为参数，或者该函数会返回另外一个函数作为返回值的函数，那么这个函数就被称之为是一个高阶函数
+    // 上面的案例中makeAdder、foo是把另外一个函数作为返回值返回，所以makeAdder、foo是高阶函数
+    ```
+
+* 数组中的函数使用：
+
+  * ```javascript
+    // 函数和方法的区别：
+    // 函数function：独立的function，那么称之为是一个函数
+    // 例如：(该函数是定义在全局中的，不属于任何东西)
+    // function foo(){ }
+    // 方法method：当我们的一个函数属于某一个对象时，我们称这个函数是这个对象的方法
+    // const obj = {
+    //     foo: function(){ }
+    // }
+    // obj.foo()  // 调用obj对象内的foo方法
+    
+    const nums = [1, 20, 50, 100, 300]  // 下面的案例都是用的这个数组
+    // 以下是几个关于数组的高级函数
+    // 高级函数一：filter()，过滤函数，拿到自己需要的数据，过滤掉不需要的多余数据
+    const newNums = nums.filter(item => item > 30)  // 生成一个新的数组newNums，把原数组nums中大于30的数据放到新数组newNums中
+    console.log(newNums)
+    
+    // 高级函数二：map()，（映射）遍历数组中所有元素，每次执行匿名函数都支持三个参数，参数分别为item（当前每一项），index（索引值），arr（原数组）
+    // map方法返回一个新的数组，数组中的元素为原始数组调用函数处理后的值
+    const addNums = nums.map(item => item + 100)
+    console.log(addNums)
+    
+    // 高级函数三：forEach()，调用数组的每个元素，将元素传给回调函数，每次执行匿名函数都支持三个参数，参数分别为item（当前每一项），index（索引值），arr（原数组）
+    nums.forEach(item => console.log(item + 20))
+    
+    // 高级函数四：find/findIndex，匹配查找，拿到自己需要的值
+    // 案例一：find（拿到符合自己要求的那个数据）
+    const item = nums.find(item => item === 20)
+    console.log(item)
+    // 案例二：find（匹配查找对象，拿到符合自己需要的对象）
+    const friends = [{
+        name:'kobe',
+        age:18,
+        height:1.98
+    },{
+        name:'itchao',
+        age:19,
+        height:1.85
+    },{
+        name:'codewhy',
+        age:20,
+        height:1.88
+    }]
+    const findFriends = friends.find(item => item.age  === 20)  // item在这里是形参，可以自己命名
+    console.log(findFriends)
+    // 案例三：findIndex,匹配查找，拿到自己需要的数据的索引值
+    const findIndexFriends = friends.findIndex(item => item.age === 20)
+    console.log(findIndexFriends)
+    
+    
+    // 高级函数五：reduce(),累加
+    // 原生代码累加写法：
+    let total = 0
+    for(let i = 0; i < nums.length; i++){
+        total += nums[i]
+    }
+    console.log(total)
+    // reduce()函数写法：
+    const total = nums.reduce(function (preValue, item){
+        return preValue + item
+    }, 0)
+    console.log(total);
+    // reduce()函数的过程分析：
+    // preValue的初始化为0
+    // 第一次： preValue:0, item:1
+    // 第二次： preValue:1, item:20
+    // 第三次： preValue:21, item:50
+    // 第四次： preValue:71, item:100
+    // 第五次： preValue:171, item:300
+    // 最后的结果：preValue:171, item:300，preValue + item = 471
+    ```
+
+##### JavaScript闭包（重要）：
+
+* JS中闭包的定义
 
 #### 第八课 基于对象的封装、原型链
 
