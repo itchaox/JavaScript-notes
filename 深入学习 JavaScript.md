@@ -584,3 +584,264 @@
   * 隐藏某一个私有属性不希望直接被外界使用和赋值
   * 如果我们希望截获一个属性它访问和设置值得过程时,也会使用存储属性描述符
 
+* 定义多个属性描述符:
+  * 私有属性:JS里面没有严格意义上的私有属性,但是用 _ 开头的都默认是私有属性或者私有方法
+  * Object.defineProperties( )方法,可以定义多个对象
+
+* 对象的方法:
+
+  ```javascript
+  let obj = {
+    name:'kobe',
+    age:18
+  }
+  
+  obj.height = 1.88
+  obj.address = '成都市'
+  obj.city = '北京市'
+  obj.city = '上海市'
+  
+  // 禁止对象继续添加新的属性
+  Object.preventExtensions(obj)
+  
+  // delete 可以删除对象内的元素
+  delete  obj.age
+  console.log(obj)
+  // freeze()方法让属性不可以修改(writable:false)
+  Object.freeze(obj)
+  obj.name = 'itchao'
+  
+  console.log(obj.name)
+  ```
+
+* 创建多个对象的方案:
+
+  * 工厂模式:
+
+    * 工厂模式是一种常见的设计模式
+
+    * 通常我们会有一个工厂方法,通过该工厂方法我们可以产生想要的对象
+
+    * ```javascript
+      // 工厂模式:工厂函数
+      function createPerson(name, age, height, address){
+        let p = {}
+      
+        p.name = name
+        p.age = age
+        p.height = height
+        p.address = address
+        p.eating = function(){
+          console.log(this.name + 'eating')
+        }
+        p.running = function(){
+          console.log(this.name + 'running')
+        }
+        return p
+      }
+      
+      let foo = new createPerson('kobe',18,1.98,'洛杉矶')
+      let foo1 = new createPerson('itchao',19,1.85,'成都')
+      let foo2 = new createPerson('coderwhy',20,1.88,'北京')
+      console.log(foo)
+      console.log(foo1)
+      console.log(foo2)
+      
+      // 工厂模式的缺点(获取不到对象最真实的类型)
+      console.log(foo, foo1, foo2)
+      ```
+
+  * **构造函数:**
+
+    * 构造函数也称为构造器(constructor),通常是我们在常见对象时会调用的函数
+
+    * 在其他面向的编程语言里面,构造函数是存在于类中的一个方法,称之为构造方法
+
+    * 但是JavaScript中单构造函数有点不太一样
+
+    * ```javascript
+      function foo(){
+      console.log('foo____')
+      }
+      
+      // 这样调用就是一个普通的函数
+      foo()
+      
+      // 通过new调用函数就变成了构造函数,在JavaScript中任何函数都可以说普通函数也可以说构造函数
+      new foo()
+      ```
+
+    * new操作符调用的作用:
+
+      * 1.在内存中创建一个新的对象(空对象)
+      * 2.这个对象内部的[[prototype]]属性会被赋值为该构造函数的prototype属性
+      * 3.构造函数内部的this,会指向创建出来的新对象
+      * 4.执行函数的内部代码(函数体代码)
+      * 5.如果构造函数没有返回非空对象,则返回创建出来的新对象
+
+    * 构造函数的使用介绍:
+
+      * ```javascript
+        // 规范:构造函数的首字母一般都是大写!
+        function Person(name, age, height){
+          this.name = name
+          this.age = age
+          this.height = height
+          this.eating = function(){
+            console.log('eating')
+          }
+        
+        }
+        
+        new aerson()
+        
+        let kobe = new Person('kobe',18,1.98)
+        let james = new Person('james',19,2.03)
+        console.log(kobe, james)
+        ```
+
+* **原型和原型链(重要):**
+
+  * 对象原型的理解:
+
+    ```javascript
+    // 每个对象中都有一个[[prototype]]属性,这个属性可以称之为对象的原型(隐式原型)
+    var obj = {name:'itchao'} // [[ prototype ]]
+    
+    var info = { } // [[ prototype ]]
+    // 1.解释原型的概念和查看原型
+    // 早期的ECMA是没有规范如何去查看[[prototype]]
+    
+    // 给对象中提供了一个属性,可以让我们查看这个原型对象(浏览器提供)
+    console.log(obj.__proto__)
+    console.log(info.__proto__)
+    
+    // ES5以后提供查看[[prototype]]的方法
+    console.log(Object.getPrototypeOf(obj))
+    
+    // 2.原型的作用
+    // 当我们从一个对象中获取某一个属性时,会触发[[get]]操作
+    // 步骤:
+    // 1.在当前对象中去查找对应的属性,如果找到就直接使用该属性
+    // 2.如果没有找到就沿着原型链去查找[[prototype]]
+    // obj.age = 18
+    obj.__proto__.age = 21  // 如果自己的对象中没有找到age属性,沿着原型链中查找就可以查到该age属性
+    console.log(obj.age)
+    ```
+
+  * 函数原型的理解:
+
+    ```javascript
+    function foo(){
+    }
+    
+    // 函数也是一个原型
+    console.log(foo.__proto__)  // 函数作为一个对象来说,它也有[[ prototype ]]隐式原型
+    
+    // 函数它因为是一个函数,所以它会多出来一个显示原型属性:prototype
+    console.log(foo.prototype)
+    
+    let foo1 = new foo()
+    let foo2 = new foo()
+    
+    console.log(foo1.__proto__ == foo.prototype)
+    console.log(foo2.__proto__ == foo.prototype)
+    ```
+
+  * Person构造函数原型:
+
+    ```javascript
+    function Person(){
+    
+    }
+    
+    let p1 = new Person()
+    let p2 = new Person()
+    
+    // 对象的隐式原型__proto__等于构造函数的显示原型prototype
+    console.log(p1.__proto__ === Person.prototype)
+    console.log(p2.__proto__ === Person.prototype)
+    
+    // 例子:如果要打印一个对象的name属性,假如该对象没有age属性,那么会沿着原型链去向上查找,看原型链上是否有name属性
+    
+    // console.log(p1.name)  // 输出结果:undefined
+    
+    // p1.__proto__.name = 'kobe'
+    // console.log(p1.name)  // 输出结果:kobe
+    
+    Person.prototype.name = 'james'
+    console.log(p1.name)  // 输出结果:james
+    ```
+
+  * 函数原型上的属性:
+
+    ```javascript
+    function  foo(){
+        
+    }
+    // console.log(foo.prototype)
+    
+    // console.log(Object.getOwnPropertyDescriptors(foo))
+    
+    Object.defineProperty(foo.prototype,"constructor",{
+      enumerable:true,
+      configurable:true,
+      writable:true,
+      value:'原型和原型链相关问题!'
+    })
+    
+    // prototype.constructor // 构造函数本身
+    // console.log(foo.prototype.constructor)  // [ Function:foo ]
+    // console.log(foo.prototype.constructor.name)
+    
+    // 2.我们也可以添加自己的属性
+    foo.prototype.name = 'itchao'
+    foo.prototype.age = 18
+    
+    let foo1 = new foo()
+    console.log(foo1.name, foo1.age)
+    
+    // 3.直接修改整个prototype的对象
+    foo.prototype = {  // 创建一个新的对象,有一个新的内存地址,可以直接改变指针的指向
+      name:'kobe',
+      age:18,
+      height:1.98
+    }
+    
+    let foo2 = new foo()
+    console.log(foo2.height)
+    
+    // 真实开发中我们可以通过Object.defineProperty方式添加constructor
+    Object.defineProperty(foo.prototype, 'constructor',{
+      enumerable:false,
+      configurable:true,
+      writable:true,
+      value:foo
+    })
+    ```
+
+  * 创建对象的方案--原型和构造函数:
+
+    ```javascript
+    function foo(name,  age, height){
+      this.name = name
+      this.age = age
+      this.height = height
+      foo.prototype.eat = function (){
+        console.log(`${this.name} + eating`)
+      }
+    }
+    
+    let foo1 = new foo('kobe',18,1.98)
+    let foo2 = new foo('coderwhy',19,1.88)
+    let foo3 = new foo('itchao',20,1.85)
+    console.log(foo1)
+    console.log(foo2)
+    console.log(foo3)
+    foo1.eat()
+    foo2.eat()
+    foo3.eat()
+    ```
+
+    
+
