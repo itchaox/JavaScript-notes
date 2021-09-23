@@ -227,7 +227,6 @@
         foo = null  // 严格意义上的解决内存泄露的办法
         ```
   
-      * 
 
 ---
 
@@ -409,8 +408,112 @@
     * 一个普通的函数function,如果它可以访问外层作用域的自由变量,那么这个函数就是一个闭包
     * 从广义的角度来说:JavaScript中的函数都是闭包(可以访问,但是并没有访问外层作用域变量)
     * 从狭义的角度来说:JavaScript中一个函数,如果访问了外层作用域的变量,那么它是一个闭包(已经访问外层作用域变量)
-* 闭包的内存泄露:
-  * 
+  
+* **闭包内存泄漏：**
+
+  * 闭包内存泄漏案例：
+
+    ```javascript
+    function createFnArray(){
+        // 占据的空间是4M，4 * 1024 * 1024 ，1kb = 1024 byte
+        let arr = new Array(1024*1024).fill(1)
+        return function(){
+            console.log(arr.length)  // 这个函数引用了上面的对象导致没法销毁
+        }
+    }
+    
+    // let arrayFn = new createFnArray()
+    
+    let arrayFn = []
+    for(let i =0; i < 100; i++){
+        setTimeout(() => {
+            arrayFn.push(createFnArray())
+        }, 100 * i)
+    }
+    
+    // 等上面都创建完，再进行销毁
+    setTimeout(() => {
+        for(let i = 0; i < 50; i++){
+            setTimeout(() => {
+                arrayFn.pop()
+            }, 100 * i)
+        }
+    }, 10000)
+    ```
+
+  * 闭包引用的自由变量销毁：
+
+    ```javascript
+    // AO不适用的属性
+    // 闭包在引用外面自由变量的时候，js引擎会进行一定的优化，把没有使用到的自由变量进行销毁，便于腾出更多的空间
+    function foo(){
+        let name = 'itchao'
+        let age = 18
+        function bar(){
+            // debugger  打断点，查看闭包内的信息
+            console.log(name)
+            console.log(age)
+        }
+        return bar
+    }
+    
+    let fn = foo()
+    fn()
+    ```
+
+##### JS函数的this指向（重要）
+
+* 为什么需要this？
+  * 在常见的编程语言中，几乎都有this这个关键字（Objective-C中使用的是self），但是JavaScript中this和常见的面向对象语言中的this不太一样：
+    * 常见面向对象的编程语言中，比如：Java、C++、Swift等等一系列语言中，this通常只会出现在类的方法中
+    * 也就是你需要有一个类，类中的方法（特别是实例方法）中，this代表的就是当前调用的对象
+    * 但是JavaScript中的this更加灵活，无论是它出现的位置还是它代表的含义
+
+* this的作用：
+
+  ```javascript
+  // 从某些角度来说，开发中如果没有this，很多的问题我们也是有解决方案
+  // 但是没有this，会让我们编写代码变得非常不方便
+  
+  
+  let obj = {
+      name:'itchao',
+      age:18,
+      eating() {
+          console.log(`年龄${this.age}的${this.name}在吃东西`)  // 这里的this指向的是obj对象
+      },
+      running() {
+          console.log(`年龄${this.age}的${this.name}在跑步`)
+      },
+      studying() {
+          console.log(`年龄${this.age}的${this.name}在学习`)
+      }
+  }
+  
+  // console.log(obj);  // 打印obj对象
+  
+  obj.eating()
+  obj.running()
+  obj.studying()
+  ```
+
+* this在全局作用域的指向问题：
+
+  ```javascript
+  // 在大多数情况下，this都是出现在函数中
+  // 在全局作用域下:
+  // 浏览器：window(globalObject)
+  // Node环境：{}
+  
+  console.log(this)
+  // Node环境下是{}的原因：
+  // module -> 加载 -> 编译 -> 放到一个函数中 -> 执行函数.apply({})
+  // 例如：
+  // function foo(){}
+  // foo.apply('abc')
+  ```
+
+* 
 
 #### 第八课 基于对象的封装、原型链
 
@@ -894,44 +997,44 @@
     foo3.eat()
     ```
 
-  * **原型链:**
+* **原型链:**
+
+  ```javascript
+  let obj = {
+    name:'itchao',
+    age:18
+  }
   
-    ```javascript
-    let obj = {
-      name:'itchao',
-      age:18
-    }
-    
-    // [[get]]操作
-    // 1.在当前对象查找属性
-    // 2.如果没有找到,这个时候就会去原型(__proto__)对象上查找
-    // 3.
-    
-    
-    obj.__proto__.address = '南湖立交地铁站'
-    obj.__proto__ = {
-    
-    }
-    
-    obj.__proto__.__proto__ = {
-      game:'lol'
-    }
-    console.log(obj)
-    // 原型链
-    console.log(obj.address)
-    console.log(obj.game)
-    ```
+  // [[get]]操作
+  // 1.在当前对象查找属性
+  // 2.如果没有找到,这个时候就会去原型(__proto__)对象上查找
+  // 3.
   
+  
+  obj.__proto__.address = '南湖立交地铁站'
+  obj.__proto__ = {
+  
+  }
+  
+  obj.__proto__.__proto__ = {
+    game:'lol'
+  }
+  console.log(obj)
+  // 原型链
+  console.log(obj.address)
+  console.log(obj.game)
+  ```
+
   * Object原型:
-  
+
     * [Object:null prototype]{},是最顶层的原型
-  
+
       * 从Object直接创建出来的对象的原型都是[Object:null prototype]{}
       * 特殊一: 该对象有原型属性,但是它的原型属性已经指向的是null,已经是顶层原型了
       * 特殊二: 该对象上有很多默认的属性和方法
-  
+
     * 顶层原型:
-  
+
       ```javascript
       let obj1 = {}  // 字面量创建对象
       let obj2 = new Object()   // 创建一个对象
@@ -957,11 +1060,11 @@
       console.log(Object.prototype)
       console.log(bar.__proto__ === Object.prototype)
       ```
-  
+
     * Object是所有类的父类:
-  
+
       * 原型链最顶层的原型对象就是Object的原型对象
-  
+
 * **JavaScript中的类和对象:**
 
   * 当我们编写如下代码时,怎么称呼这个Person呢?
@@ -988,6 +1091,147 @@
     * 封装:将属性和方法封装到一个类中,可以称之为封装的过程
     * 继承:继承是面向对象中非常重要的,不仅仅可以减少重复代码的数量,也是多态的前提(纯面向对象中)
     * 多态:不同的对象在执行时表现出不同的形态
+    
   * 继承是做什么呢?
     * 继承可以帮助我们将重复的代码和逻辑抽取到父类中,子类只需要直接继承过来使用即可
+    
+  * 父类、子类：子类可以继承自父类
+
+  * 原型链的继承方案：
+
+    ```javascript
+    // 父类：公共属性和方法
+    function Person(){
+        this.name = 'itchao'
+        this.friend = []
+    }
+    
+    Person.prototype.eating = function(){
+        console.log(this.name + ' eating')
+    }
+    
+    // 子类：特定属性和方法
+    function Student() {
+        this.sno = 24
+    }
+    
+    let p = new Person()  // 注意顺序不能乱写，不能放在studying的后面，这样会报错
+    Student.prototype = p  // 把对象中该有的属性放到了Student原型上面
+    
+    Student.prototype.studying = function() {
+        console.log(this.name + ' studying')
+    }
+    let stu = new Student()
+    console.log(stu.name)
+    console.log(stu.sno)
+    stu.eating()
+    stu.studying()
+    
+    // 原型链实现继承的弊端：
+    // 1.第一个弊端：打印stu对象，继承的属性是看不到的（原型上的属性是看不到的，只看得到对象本身有的属性）
+    // console.log(stu.name)
+    
+    // 2.第二个弊端：创建出来两个对象
+    let stu1 = new Student()
+    let stu2 = new Student()
+    
+    // 情况一：
+    // 获取引用，修改引用中的值，会影响其他对象
+    // stu1.friend.push('kobe')
+    //
+    // console.log(stu1.friend)
+    // console.log(stu2.friend)
+    
+    // 情况二：
+    // 直接修改对象上的属性，是给本对象添加一个新属性，不会影响其他对象
+    // stu1.name = 'kobe'
+    // console.log(stu2.name)
+    
+    // 3.第三个弊端：在前面实现类的过程中都没有传递参数
+    ```
+
+  * 借用构造函数继承：
+  
+    * 为了解决原型链继承中存在的问题，开发人员提供了一种新的技术：constructor stealing(有很多的名称：借用构造函数或者称之为经典继承或者称之为伪造对象)
+  
+      * steal是偷窃、剽窃的意思，但是这里可以翻译成借用
+  
+    * 借用继承的做法非常简单：在子类型构造函数的内部调用父类型构造函数
+  
+      * 因为函数可以在任意的时刻被调用
+  
+      * 因此通过apply（）和call（）方法也可以在新创建的对象上执行构造函数
+  
+      * ```javascript
+        function Student(name, friends, sno){
+          Person.call(this, name, friends)
+          this.sno = sno
+        }
+        
+        Student.prototype = Person.prototype
+        ```
+  
+      * ###### 具体详细代码如下：
+  
+      ```javascript
+      // Person.call(this, name, age, friends)  // 关键代码，改变this的指向为Student，可以直接解决前面提到的所有弊端问题
+      
+      // 父类：公共属性和方法
+      function Person(name, age, friends){
+          this.name = name
+          this.age = age
+          this.friends = friends
+      }
+      
+      Person.prototype.eating = function(){
+          console.log(this.name + ' eating')
+      }
+      
+      // 子类：特定属性和方法
+      function Student(name, age, friends, sno) {
+          Person.call(this, name, age, friends)  // 关键代码，改变this的指向为Student，可以直接解决前面提到的所有弊端问题
+          this.sno = sno
+      }
+      
+      let p = new Person()  // 注意顺序不能乱写，不能放在studying的后面，这样会报错
+      Student.prototype = p  // 把对象中该有的属性放到了Student原型上面
+      
+      Student.prototype.studying = function() {
+          console.log(this.name + ' studying')
+      }
+      let stu = new Student('coderwhy',19,['JavaScript', 'CSS', 'HTML'], 110)
+      console.log(stu.name)
+      console.log(stu.sno)
+      stu.eating()
+      stu.studying()
+      
+      // 原型链实现继承的弊端：
+      // 1.第一个弊端：打印stu对象，继承的属性是看不到的（原型上的属性是看不到的，只看得到对象本身有的属性）
+      // console.log(stu)
+      
+      // 2.第二个弊端：创建出来两个对象
+      // let stu1 = new Student('a',1,['b','c'],11)
+      // let stu2 = new Student('d',2,['e','f'],22)
+      
+      // 情况一：
+      // 获取引用，修改引用中的值，会影响其他对象
+      // stu1.friends.push('kobe')
+      //
+      // console.log(stu1.friends)
+      // console.log(stu2.friends)
+      
+      // 情况二：
+      // 直接修改对象上的属性，是给本对象添加一个新属性，不会影响其他对象
+      // stu1.name = 'kobe'
+      // console.log(stu2.name)
+      
+      // 3.第三个弊端：在前面实现类的过程中都没有传递参数
+      
+      
+      // 强调：借用构造函数也有弊端：
+      // 1.第一个弊端：Person函数至少被调用两次
+      // 2.第二个弊端：stu的原型对象上会多出一些属性，但是这些属性是没有存在的必要
+      ```
+  
+      
 
