@@ -1132,148 +1132,148 @@
         console.log(kobe, james)
         ```
 
-* **原型和原型链(重要):**
+##### 原型和原型链(重要):
 
-  * 对象原型的理解:
+* 对象原型的理解:
 
-    ```javascript
-    // 每个对象中都有一个[[prototype]]属性,这个属性可以称之为对象的原型(隐式原型)
-    var obj = {name:'itchao'} // [[ prototype ]]
-    
-    var info = { } // [[ prototype ]]
-    // 1.解释原型的概念和查看原型
-    // 早期的ECMA是没有规范如何去查看[[prototype]]
-    
-    // 给对象中提供了一个属性,可以让我们查看这个原型对象(浏览器提供)
-    console.log(obj.__proto__)
-    console.log(info.__proto__)
-    
-    // ES5以后提供查看[[prototype]]的方法
-    console.log(Object.getPrototypeOf(obj))
-    
-    // 2.原型的作用
-    // 当我们从一个对象中获取某一个属性时,会触发[[get]]操作
-    // 步骤:
-    // 1.在当前对象中去查找对应的属性,如果找到就直接使用该属性
-    // 2.如果没有找到就沿着原型链去查找[[prototype]]
-    // obj.age = 18
-    obj.__proto__.age = 21  // 如果自己的对象中没有找到age属性,沿着原型链中查找就可以查到该age属性
-    console.log(obj.age)
-    ```
+  ```javascript
+  // 每个对象中都有一个[[prototype]]属性,这个属性可以称之为对象的原型(隐式原型)
+  var obj = {name:'itchao'} // [[ prototype ]]
+  
+  var info = { } // [[ prototype ]]
+  // 1.解释原型的概念和查看原型
+  // 早期的ECMA是没有规范如何去查看[[prototype]]
+  
+  // 给对象中提供了一个属性,可以让我们查看这个原型对象(浏览器提供)
+  console.log(obj.__proto__)
+  console.log(info.__proto__)
+  
+  // ES5以后提供查看[[prototype]]的方法
+  console.log(Object.getPrototypeOf(obj))
+  
+  // 2.原型的作用
+  // 当我们从一个对象中获取某一个属性时,会触发[[get]]操作
+  // 步骤:
+  // 1.在当前对象中去查找对应的属性,如果找到就直接使用该属性
+  // 2.如果没有找到就沿着原型链去查找[[prototype]]
+  // obj.age = 18
+  obj.__proto__.age = 21  // 如果自己的对象中没有找到age属性,沿着原型链中查找就可以查到该age属性
+  console.log(obj.age)
+  ```
 
-  * 函数原型的理解:
+* 函数原型的理解:
 
-    ```javascript
-    function foo(){
+  ```javascript
+  function foo(){
+  }
+  
+  // 函数也是一个原型
+  console.log(foo.__proto__)  // 函数作为一个对象来说,它也有[[ prototype ]]隐式原型
+  
+  // 函数它因为是一个函数,所以它会多出来一个显示原型属性:prototype
+  console.log(foo.prototype)
+  
+  let foo1 = new foo()
+  let foo2 = new foo()
+  
+  console.log(foo1.__proto__ == foo.prototype)
+  console.log(foo2.__proto__ == foo.prototype)
+  ```
+
+* Person构造函数原型:
+
+  ```javascript
+  function Person(){
+  
+  }
+  
+  let p1 = new Person()
+  let p2 = new Person()
+  
+  // 对象的隐式原型__proto__等于构造函数的显示原型prototype
+  console.log(p1.__proto__ === Person.prototype)
+  console.log(p2.__proto__ === Person.prototype)
+  
+  // 例子:如果要打印一个对象的name属性,假如该对象没有age属性,那么会沿着原型链去向上查找,看原型链上是否有name属性
+  
+  // console.log(p1.name)  // 输出结果:undefined
+  
+  // p1.__proto__.name = 'kobe'
+  // console.log(p1.name)  // 输出结果:kobe
+  
+  Person.prototype.name = 'james'
+  console.log(p1.name)  // 输出结果:james
+  ```
+
+* 函数原型上的属性:
+
+  ```javascript
+  function  foo(){
+      
+  }
+  // console.log(foo.prototype)
+  
+  // console.log(Object.getOwnPropertyDescriptors(foo))
+  
+  Object.defineProperty(foo.prototype,"constructor",{
+    enumerable:true,
+    configurable:true,
+    writable:true,
+    value:'原型和原型链相关问题!'
+  })
+  
+  // prototype.constructor // 构造函数本身
+  // console.log(foo.prototype.constructor)  // [ Function:foo ]
+  // console.log(foo.prototype.constructor.name)
+  
+  // 2.我们也可以添加自己的属性
+  foo.prototype.name = 'itchao'
+  foo.prototype.age = 18
+  
+  let foo1 = new foo()
+  console.log(foo1.name, foo1.age)
+  
+  // 3.直接修改整个prototype的对象
+  foo.prototype = {  // 创建一个新的对象,有一个新的内存地址,可以直接改变指针的指向
+    name:'kobe',
+    age:18,
+    height:1.98
+  }
+  
+  let foo2 = new foo()
+  console.log(foo2.height)
+  
+  // 真实开发中我们可以通过Object.defineProperty方式添加constructor
+  Object.defineProperty(foo.prototype, 'constructor',{
+    enumerable:false,
+    configurable:true,
+    writable:true,
+    value:foo
+  })
+  ```
+
+* 创建对象的方案--原型和构造函数:
+
+  ```javascript
+  function foo(name,  age, height){
+    this.name = name
+    this.age = age
+    this.height = height
+    foo.prototype.eat = function (){
+      console.log(`${this.name} + eating`)
     }
-    
-    // 函数也是一个原型
-    console.log(foo.__proto__)  // 函数作为一个对象来说,它也有[[ prototype ]]隐式原型
-    
-    // 函数它因为是一个函数,所以它会多出来一个显示原型属性:prototype
-    console.log(foo.prototype)
-    
-    let foo1 = new foo()
-    let foo2 = new foo()
-    
-    console.log(foo1.__proto__ == foo.prototype)
-    console.log(foo2.__proto__ == foo.prototype)
-    ```
-
-  * Person构造函数原型:
-
-    ```javascript
-    function Person(){
-    
-    }
-    
-    let p1 = new Person()
-    let p2 = new Person()
-    
-    // 对象的隐式原型__proto__等于构造函数的显示原型prototype
-    console.log(p1.__proto__ === Person.prototype)
-    console.log(p2.__proto__ === Person.prototype)
-    
-    // 例子:如果要打印一个对象的name属性,假如该对象没有age属性,那么会沿着原型链去向上查找,看原型链上是否有name属性
-    
-    // console.log(p1.name)  // 输出结果:undefined
-    
-    // p1.__proto__.name = 'kobe'
-    // console.log(p1.name)  // 输出结果:kobe
-    
-    Person.prototype.name = 'james'
-    console.log(p1.name)  // 输出结果:james
-    ```
-
-  * 函数原型上的属性:
-
-    ```javascript
-    function  foo(){
-        
-    }
-    // console.log(foo.prototype)
-    
-    // console.log(Object.getOwnPropertyDescriptors(foo))
-    
-    Object.defineProperty(foo.prototype,"constructor",{
-      enumerable:true,
-      configurable:true,
-      writable:true,
-      value:'原型和原型链相关问题!'
-    })
-    
-    // prototype.constructor // 构造函数本身
-    // console.log(foo.prototype.constructor)  // [ Function:foo ]
-    // console.log(foo.prototype.constructor.name)
-    
-    // 2.我们也可以添加自己的属性
-    foo.prototype.name = 'itchao'
-    foo.prototype.age = 18
-    
-    let foo1 = new foo()
-    console.log(foo1.name, foo1.age)
-    
-    // 3.直接修改整个prototype的对象
-    foo.prototype = {  // 创建一个新的对象,有一个新的内存地址,可以直接改变指针的指向
-      name:'kobe',
-      age:18,
-      height:1.98
-    }
-    
-    let foo2 = new foo()
-    console.log(foo2.height)
-    
-    // 真实开发中我们可以通过Object.defineProperty方式添加constructor
-    Object.defineProperty(foo.prototype, 'constructor',{
-      enumerable:false,
-      configurable:true,
-      writable:true,
-      value:foo
-    })
-    ```
-
-  * 创建对象的方案--原型和构造函数:
-
-    ```javascript
-    function foo(name,  age, height){
-      this.name = name
-      this.age = age
-      this.height = height
-      foo.prototype.eat = function (){
-        console.log(`${this.name} + eating`)
-      }
-    }
-    
-    let foo1 = new foo('kobe',18,1.98)
-    let foo2 = new foo('coderwhy',19,1.88)
-    let foo3 = new foo('itchao',20,1.85)
-    console.log(foo1)
-    console.log(foo2)
-    console.log(foo3)
-    foo1.eat()
-    foo2.eat()
-    foo3.eat()
-    ```
+  }
+  
+  let foo1 = new foo('kobe',18,1.98)
+  let foo2 = new foo('coderwhy',19,1.88)
+  let foo3 = new foo('itchao',20,1.85)
+  console.log(foo1)
+  console.log(foo2)
+  console.log(foo3)
+  foo1.eat()
+  foo2.eat()
+  foo3.eat()
+  ```
 
 * **原型链:**
 
@@ -1363,25 +1363,103 @@
     let foo2 = new foo()
     ```
 
-* **面向对象的特性--继承:**
 
-  * 面向对象的三大特性:封装、继承、多态
-    * 封装:将属性和方法封装到一个类中,可以称之为封装的过程
-    * 继承:继承是面向对象中非常重要的,不仅仅可以减少重复代码的数量,也是多态的前提(纯面向对象中)
-    * 多态:不同的对象在执行时表现出不同的形态
-    
-  * 继承是做什么呢?
-    * 继承可以帮助我们将重复的代码和逻辑抽取到父类中,子类只需要直接继承过来使用即可
-    
-  * 父类、子类：子类可以继承自父类
+##### 面向对象的特性--继承:
 
-  * 原型链的继承方案：
+* 面向对象的三大特性:封装、继承、多态
+  * 封装:将属性和方法封装到一个类中,可以称之为封装的过程
+  * 继承:继承是面向对象中非常重要的,不仅仅可以减少重复代码的数量,也是多态的前提(纯面向对象中)
+  * 多态:不同的对象在执行时表现出不同的形态
+  
+* 继承是做什么呢?
+  * 继承可以帮助我们将重复的代码和逻辑抽取到父类中,子类只需要直接继承过来使用即可
+  
+* 父类、子类：子类可以继承自父类
+
+* **原型链**的继承方案：
+
+  ```javascript
+  // 父类：公共属性和方法
+  function Person(){
+      this.name = 'itchao'
+      this.friend = []
+  }
+  
+  Person.prototype.eating = function(){
+      console.log(this.name + ' eating')
+  }
+  
+  // 子类：特定属性和方法
+  function Student() {
+      this.sno = 24
+  }
+  
+  let p = new Person()  // 注意顺序不能乱写，不能放在studying的后面，这样会报错
+  Student.prototype = p  // 把对象中该有的属性放到了Student原型上面
+  
+  Student.prototype.studying = function() {
+      console.log(this.name + ' studying')
+  }
+  let stu = new Student()
+  console.log(stu.name)
+  console.log(stu.sno)
+  stu.eating()
+  stu.studying()
+  
+  // 原型链实现继承的弊端：
+  // 1.第一个弊端：打印stu对象，继承的属性是看不到的（原型上的属性是看不到的，只看得到对象本身有的属性）
+  // console.log(stu.name)
+  
+  // 2.第二个弊端：创建出来两个对象
+  let stu1 = new Student()
+  let stu2 = new Student()
+  
+  // 情况一：
+  // 获取引用，修改引用中的值，会影响其他对象
+  // stu1.friend.push('kobe')
+  //
+  // console.log(stu1.friend)
+  // console.log(stu2.friend)
+  
+  // 情况二：
+  // 直接修改对象上的属性，是给本对象添加一个新属性，不会影响其他对象
+  // stu1.name = 'kobe'
+  // console.log(stu2.name)
+  
+  // 3.第三个弊端：在前面实现类的过程中都没有传递参数
+  ```
+
+* 借用**构造函数**继承：
+
+  * 为了解决原型链继承中存在的问题，开发人员提供了一种新的技术：constructor stealing(有很多的名称：借用构造函数或者称之为经典继承或者称之为伪造对象)
+
+    * steal是偷窃、剽窃的意思，但是这里可以翻译成借用
+
+  * 借用继承的做法非常简单：在子类型构造函数的内部调用父类型构造函数
+
+    * 因为函数可以在任意的时刻被调用
+
+    * 因此通过apply（）和call（）方法也可以在新创建的对象上执行构造函数
+
+    * ```javascript
+      function Student(name, friends, sno){
+        Person.call(this, name, friends)
+        this.sno = sno
+      }
+      
+      Student.prototype = Person.prototype
+      ```
+
+    * 具体代码如下:
 
     ```javascript
+    // Person.call(this, name, age, friends)  // 关键代码，改变this的指向为Student，可以直接解决前面提到的所有弊端问题
+    
     // 父类：公共属性和方法
-    function Person(){
-        this.name = 'itchao'
-        this.friend = []
+    function Person(name, age, friends){
+        this.name = name
+        this.age = age
+        this.friends = friends
     }
     
     Person.prototype.eating = function(){
@@ -1389,8 +1467,9 @@
     }
     
     // 子类：特定属性和方法
-    function Student() {
-        this.sno = 24
+    function Student(name, age, friends, sno) {
+        Person.call(this, name, age, friends)  // 关键代码，改变this的指向为Student，可以直接解决前面提到的所有弊端问题
+        this.sno = sno
     }
     
     let p = new Person()  // 注意顺序不能乱写，不能放在studying的后面，这样会报错
@@ -1399,7 +1478,7 @@
     Student.prototype.studying = function() {
         console.log(this.name + ' studying')
     }
-    let stu = new Student()
+    let stu = new Student('coderwhy',19,['JavaScript', 'CSS', 'HTML'], 110)
     console.log(stu.name)
     console.log(stu.sno)
     stu.eating()
@@ -1407,18 +1486,18 @@
     
     // 原型链实现继承的弊端：
     // 1.第一个弊端：打印stu对象，继承的属性是看不到的（原型上的属性是看不到的，只看得到对象本身有的属性）
-    // console.log(stu.name)
+    // console.log(stu)
     
     // 2.第二个弊端：创建出来两个对象
-    let stu1 = new Student()
-    let stu2 = new Student()
+    // let stu1 = new Student('a',1,['b','c'],11)
+    // let stu2 = new Student('d',2,['e','f'],22)
     
     // 情况一：
     // 获取引用，修改引用中的值，会影响其他对象
-    // stu1.friend.push('kobe')
+    // stu1.friends.push('kobe')
     //
-    // console.log(stu1.friend)
-    // console.log(stu2.friend)
+    // console.log(stu1.friends)
+    // console.log(stu2.friends)
     
     // 情况二：
     // 直接修改对象上的属性，是给本对象添加一个新属性，不会影响其他对象
@@ -1426,90 +1505,188 @@
     // console.log(stu2.name)
     
     // 3.第三个弊端：在前面实现类的过程中都没有传递参数
+    
+    
+    // 强调：借用构造函数也有弊端：
+    // 1.第一个弊端：Person函数至少被调用两次
+    // 2.第二个弊端：stu的原型对象上会多出一些属性，但是这些属性是没有存在的必要
     ```
 
-  * 借用构造函数继承：
-  
-    * 为了解决原型链继承中存在的问题，开发人员提供了一种新的技术：constructor stealing(有很多的名称：借用构造函数或者称之为经典继承或者称之为伪造对象)
-  
-      * steal是偷窃、剽窃的意思，但是这里可以翻译成借用
-  
-    * 借用继承的做法非常简单：在子类型构造函数的内部调用父类型构造函数
-  
-      * 因为函数可以在任意的时刻被调用
-  
-      * 因此通过apply（）和call（）方法也可以在新创建的对象上执行构造函数
-  
-      * ```javascript
-        function Student(name, friends, sno){
-          Person.call(this, name, friends)
-          this.sno = sno
-        }
-        
-        Student.prototype = Person.prototype
-        ```
-  
-      * ###### 具体详细代码如下：
-  
-      ```javascript
-      // Person.call(this, name, age, friends)  // 关键代码，改变this的指向为Student，可以直接解决前面提到的所有弊端问题
-      
-      // 父类：公共属性和方法
-      function Person(name, age, friends){
-          this.name = name
-          this.age = age
-          this.friends = friends
+* 父类原型赋值给子类:
+
+  * ```javascript
+    Student.prototype = Person.prototype
+    ```
+
+  * (不正确,不要这样写,改变子类的原型会影响父类的原型)直接将父类的原型赋值给子类,作为子类的原型
+
+* 原型式继承函数:
+
+  * ```javascript
+    let obj = {
+      name:'kobe',
+      age:18,
+      play(){
+        console.log('play basketball!')
       }
-      
-      Person.prototype.eating = function(){
-          console.log(this.name + ' eating')
+    }
+    
+    // console.log(obj);
+    
+    // 原型式继承函数
+    function createObject(o){
+      let newObj = {}
+      Object.setPrototypeOf(newObj, o)
+      return newObj
+    }
+    
+    let bar = createObject(obj)
+    console.log(bar.__proto__);
+    
+    // 最初实现原型式继承函数代码
+    function createObject2(o){
+      function Fo(){ }
+      Fo.prototype = o
+      let newObj = new Fo()
+      return newObj
+    }
+    
+    let info = createObject2(obj)
+    console.log(info.__proto__);
+    
+    // ES实现的Object.create()函数直接实现原型式继承
+    let foo = Object.create(obj)
+    console.log(foo.__proto__);
+    ```
+
+* 寄生式继承:
+
+  * ```javascript
+    let obj = {
+      name:'kobe',
+      age:18,
+      eating(){
+        console.log(this.name + ' eating');
       }
-      
-      // 子类：特定属性和方法
-      function Student(name, age, friends, sno) {
-          Person.call(this, name, age, friends)  // 关键代码，改变this的指向为Student，可以直接解决前面提到的所有弊端问题
-          this.sno = sno
+    }
+    // console.log(obj);
+    
+    let subObj = Object.create(obj)
+    // console.log(subObj);
+    
+    function createPerson(name) {
+      let stu = Object.create(obj)
+      stu.name = name
+      stu.studying = function() {
+        console.log('studying');
       }
-      
-      let p = new Person()  // 注意顺序不能乱写，不能放在studying的后面，这样会报错
-      Student.prototype = p  // 把对象中该有的属性放到了Student原型上面
-      
-      Student.prototype.studying = function() {
-          console.log(this.name + ' studying')
-      }
-      let stu = new Student('coderwhy',19,['JavaScript', 'CSS', 'HTML'], 110)
-      console.log(stu.name)
-      console.log(stu.sno)
-      stu.eating()
-      stu.studying()
-      
-      // 原型链实现继承的弊端：
-      // 1.第一个弊端：打印stu对象，继承的属性是看不到的（原型上的属性是看不到的，只看得到对象本身有的属性）
-      // console.log(stu)
-      
-      // 2.第二个弊端：创建出来两个对象
-      // let stu1 = new Student('a',1,['b','c'],11)
-      // let stu2 = new Student('d',2,['e','f'],22)
-      
-      // 情况一：
-      // 获取引用，修改引用中的值，会影响其他对象
-      // stu1.friends.push('kobe')
-      //
-      // console.log(stu1.friends)
-      // console.log(stu2.friends)
-      
-      // 情况二：
-      // 直接修改对象上的属性，是给本对象添加一个新属性，不会影响其他对象
-      // stu1.name = 'kobe'
-      // console.log(stu2.name)
-      
-      // 3.第三个弊端：在前面实现类的过程中都没有传递参数
-      
-      
-      // 强调：借用构造函数也有弊端：
-      // 1.第一个弊端：Person函数至少被调用两次
-      // 2.第二个弊端：stu的原型对象上会多出一些属性，但是这些属性是没有存在的必要
-      ```
-  
-      
+      return stu.studying
+    }
+    
+    let stu1 = createPerson('itchao')
+    let stu2 = createPerson('coderwhy')
+    let stu3 = createPerson('james')
+    console.log(stu1, stu2, stu3);
+    ```
+
+* 寄生组合式函数:
+
+  * 回顾一下之前提出的比较理想的组合继承:
+
+    * 组合继承是比较理想的继承方式,但是存在两个问题
+    * 问题一:
+
+    ```javascript
+    function createObject(o) {
+      function Fn() {}
+      Fn.prototype = o
+      return new  Fn()
+    }
+    
+    function inheritPrototype(SubType, SuperType){
+      SubType.prototype = createObject(SuperType.prototype)
+      Object.defineProperty(SubType.prototype,'constructor', {
+        enumerable:false,
+        configurable:true,
+        writable:true,
+        value:SubType
+      })
+    }
+    
+    
+    function Person(name, age) {
+      this.name = name
+      this.age = age
+    }
+    
+    Person.prototype.running = function () {
+      console.log('running');
+    }
+    
+    function Student(name, age, sno) {
+      Person.call(this, name, age, sno)
+      this.sno = sno
+    }
+    
+    // Student.prototype = Person.prototype
+    inheritPrototype(Student, Person)
+    
+    Student.prototype.studying = function() {
+      console.log('studying');
+    }
+    
+    Student.prototype.running = function() {
+      console.log('running');
+    }
+    
+    let info = new Student('kobe', 18, 20)
+    console.log(info);
+    info.studying()
+    info.running()
+    ```
+
+* 对象的方法补充:
+
+  * hasOwnProperty
+    * 对象是否有某一个属于自己的属性(不是在原型上的属性)
+  * in/for in 操作符
+    * 判断某个属性是否在某个对象或者对象的原型上
+  * instanceof
+    * 用于检测**构造函数的prototype**,是否出现在**某个实例对象的原型链**上
+  * isPrototypeOf
+    * 用于检测**某个对象**,是否出现在**某个实例对象的原型链**上
+
+* 对象-函数-原型的关系:
+
+  * ```javascript
+    let obj = {
+      name:'itchao',
+      age:18
+    }
+    
+    // 对象里面有一个__prototype__对象:隐式原型对象
+    console.log(obj.__proto__)
+    
+    // Foo是一个函数,有一个原型对象:prototype
+    // Foo.prototype来自哪里?
+    // 答案:创建了一个函数,Foo.prototype = {constructor: Foo}
+    
+    // Foo是一个对象,那么它会有一个隐式原型对象:Foo__proto__
+    // Foo.__proto__来自哪里?
+    // 答案:new Function Foo.__proto__ = Function.prototype
+    // Function.prototype = {constructor:Function}
+    
+    function Foo() {
+    
+    }
+    
+    console.log(Foo.__proto__)  // {}
+    console.log(Foo.prototype)  // {}
+    console.log(Foo.__proto__ === Foo.prototype)  // false
+    console.log(Foo.prototype.constructor)  // [Function: Foo]
+    console.log(Foo.__proto__.constructor)  // [Function: Function]
+    console.log(Function.__proto__ === Function.prototype)  // true
+    ```
+
+* 
 
