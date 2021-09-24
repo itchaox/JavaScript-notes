@@ -617,6 +617,180 @@
     obj.studying()  // 不是独立函数,这里是obj对象调用了函数studying,所以this指向obj(隐式绑定)
     ```
 
+* 绑定规则二：隐式绑定：
+
+  * 通过某个对象进行调用：
+    * 也就是它的调用位置中，是通过某个对象发起的函数调用
+    
+    ```javascript
+    // 隐式绑定：object.fn()
+    // object对象会被js引擎绑定到fn函数中的this里面
+    
+    
+    //      console.log(this)
+    //  }
+    // bar()  // 独立函数调用，this指向window
+    
+    // 1.案例一：
+    // let obj = {
+    //     name:'itchao',
+    //     age:18,
+    //     foo(){
+    //     console.log(this)
+    // }
+    // }
+    //
+    // obj.foo()  // 通过对象进行调用函数，this指向调用的对象
+    
+    // 2.案例二：
+    // let obj1 = {
+    //     name:'itchao',
+    //     eating() {
+    //         console.log(this.name + ' eating')
+    //     },
+    //     running() {
+    //         console.log(this.name + ' running')
+    //     }
+    // }
+    //
+    // obj1.eating()   // obj1对象调用eating函数，因此this指向了发起调用的obj1对象
+    // obj1.running()  // obj1对象调用running函数，因此this指向了发起调用的obj1对象
+    
+    // 注意：
+    // let fn = obj1.eating
+    // fn()    // 此时fn函数为独立函数，因此this指向window
+    
+    // 3.案例三：
+    let obj2 = {
+        name:'kobe',
+        age:18,
+        foo() {
+            console.log(this)
+        }
+    }
+    
+    let obj3 = {
+        name:'coderwhy',
+        age:19,
+        bar:obj2.foo
+    }
+    
+    obj3.bar()  // 对象obj3调用了函数bar，因此this指向发起调用的obj3对象
+    ```
+  
+* 绑定规则三：显示绑定：
+
+  * 隐式绑定有一个前提条件：
+
+    * 必须在调用的对象内部有一个对函数的引用（比如一个属性）
+    * 如果没有这样的引用，在进行调用时，会报找不到该函数的错误
+    * 正是通过这个引用，间接的将this绑定到了这个对象上
+
+  * 如果不希望在**对象内部**包含这个函数的引用，同时又希望在这个对象上进行强制调用，该怎么做呢？
+
+    * JavaScript所有的函数都可以使用call和apply方法（这个和prototype有关）
+      * 它们两个的区别这里不展开讲
+      * 其实非常简单，第一个参数相同，后面的参数，apply为数组，call为参数列表
+    * 这两个函数的第一个参数都要求是一个对象，这个对象的作用是什么呢？就是给this准备的
+    * 在调用这个函数时，会将this绑定到这个传入的对象上
+
+  * **call-apply函数：**
+
+    ```javascript
+    // function foo()  {
+    //     console.log('调用函数！', this)
+    // }
+    
+    // 1.foo直接调用和call/apply调用的不同在于this绑定的不同
+    // foo直接调用指向的是全局对象(window)
+    // foo()  // 最简单的方式，直接调用函数
+    // 可以改变this的指向，这里指向obj对象，但是需要在对象内加入一个属性
+    // let obj = {
+    //     name:'itchao',
+    //     foo:foo
+    // }
+    // obj.foo()   // 对象obj调用了函数foo，因此this指向发起调用的obj对象
+    
+    // 需求：将this的指向改变为指向obj1，但是不在obj1内添加属性
+    // 解决方法：使用call和apply函数，手动指定函数被调用时this的指向
+    // 总结：call和apply函数可以手动改变this指向
+    // let obj1 = {
+    //     name:'kobe',
+    //     age:18
+    // }
+    // foo.call()  // 只是调用了函数，没有改变this的指向，此时this指向全局作用域的window
+    // foo.call(obj1)  // 调用了函数且改变了this的指向，此时this的指向被手动的改变为指向obj1对象
+    // foo.apply()  // 只是调用了函数，没有改变this的指向，此时this指向全局作用域的window
+    // foo.apply(obj1)  // // 调用了函数且改变了this的指向，此时this的指向被手动的改变为指向obj1对象
+    // foo.apply('aaa')
+    
+    
+    // 2.call和apply有什么区别？
+    function sum(num1, num2){
+        console.log(num1 + num2, this)
+    }
+    
+    sum(20, 30, 40)
+    sum.call('call', 20, 30, 40)  // 调用sum函数且改变this指向为call，call是按照【剩余参数的模式】传递参数
+    sum.apply('apply', [20, 30, 40])  // 调用sum函数且改变this指向为apply，apply是按照【将参数放到一个数组】传递参数
+    
+    
+    // 3.call和apply在执行函数时，是可以明确的绑定this(传入的第一个参数就是this的指向)，这个绑定规则称之为显示绑定
+    ```
+
+  * **bind函数：**
+
+    ```javascript
+    function foo(){
+        console.log(this)
+    }
+    
+    // foo()  // 独立函数，this指向全局作用域的window
+    // 需求：改变this的指向为aaa
+    // 解决方案一(方案不佳)：call和apply函数都可以实现改变this的指向为aaa的效果，但是要想改变多次就需要调用多次call或者apply函数，不方便
+    // foo.call('aaa')
+    // foo.call('aaa')
+    // foo.call('aaa')
+    
+    // 需求：改变this的指向为aaa
+    // 解决方案二：使用bind函数改变this的指向为aaa，
+    // bind函数优点：bind会生成一个新的函数，后面使用的时候调用新函数即可，可以手动改变this指向且不需要调用多次bind函数
+    // 默认绑定和显示绑定bind冲突：优先级(显示绑定)
+    let newFoo = foo.bind('aaa')  // foo对象调用bind函数，改变this指向为aaa
+    newFoo()
+    newFoo()
+    newFoo()
+    ```
+
+* 绑定规则四：new绑定：
+
+  * JavaScript中的函数可以当做一个类的构造函数来使用，也就是使用new关键字
+
+  * 使用new关键字来调用函数，会执行如下操作：
+
+    * 1.创建一个全新的对象
+    * 2.这个新对象会被执行prototype连接
+    * 3.这个新对象会绑定到函数调用的this上(this的绑定在这个步骤上完成)
+    * 4.如果函数没有返回其他对象，表达式会返回这个新对象
+
+    ```javascript
+    // 通过一个new关键字调用一个函数时(构造器)，这个时候this是在调用这个构造器时创建出来的对象
+    // this = 创建出来的对象
+    // 这个绑定的过程就是new绑定
+    
+    function Person(name, age){
+        this.name = name
+        this.age = age
+    }
+    // new关键字：创建新的对象然后赋值给this，最后返回this，也就是返回这个新对象
+    let p1 = new Person('itchao', 18)
+    let p2 = new Person('kobe',18)
+    console.log(p1)
+    console.log(p1.name, p2.age);
+    console.log(p2)
+    console.log(p2.name, p2.age);
+    ```
+
     
 
 #### 第八课 基于对象的封装、原型链
