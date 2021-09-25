@@ -1,6 +1,6 @@
-var name = 'window'
+let name = 'window'
 
-var person1 = {  // 对象不产生作用域，{}只是一个对象而已，这里的this指向的外层作用域是指向window
+let person1 = {  // 对象不产生作用域，{}只是一个对象而已，这里的this指向的外层作用域是指向window
   name:'person1',
   foo1() {
     console.log(this.name)

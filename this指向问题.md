@@ -1,13 +1,13 @@
-##### 3. JS函数的this指向（重要）
+### 1.  JavaScript函数的this指向(重要)
 
-###### 3.1 为什么需要this？
+#### 1.1 为什么需要this？
 
 * 在常见的编程语言中，几乎都有this这个关键字（Objective-C中使用的是self），但是JavaScript中this和常见的面向对象语言中的this不太一样：
   * 常见面向对象的编程语言中，比如：Java、C++、Swift等等一系列语言中，this通常只会出现在类的方法中
   * 也就是你需要有一个类，类中的方法（特别是实例方法）中，this代表的就是当前调用的对象
   * 但是JavaScript中的this更加灵活，无论是它出现的位置还是它代表的含义
 
-###### 3.2 this的作用：
+#### 1.2 this的作用：
 
 ```javascript
 // 从某些角度来说，开发中如果没有this，很多的问题我们也是有解决方案
@@ -35,7 +35,7 @@ obj.running()
 obj.studying()
 ```
 
-###### 3.3 this全局作用域的指向：
+#### 1.3 this全局作用域的指向：
 
 * 所有的函数在被调用时,都会创建一个执行上下文
 * 这个上下文中记录着函数的调用栈、AO对象等
@@ -55,7 +55,7 @@ console.log(this)
 // foo.apply('abc')
 ```
 
-###### 3.4 this到底指向什么呢?
+#### 1.4 this到底指向什么呢?
 
 * 函数中的this指向启发:
 
@@ -74,7 +74,7 @@ console.log(this)
    * 绑定三:显示绑定
    * 绑定四:new绑定
 
-###### 3.5 规则一:默认绑定:
+#### 1.5 规则一:默认绑定:
 
 * 什么情况下使用默认绑定呢?独立函数调用
 
@@ -155,7 +155,7 @@ console.log(this)
   obj.studying()  // 不是独立函数,这里是obj对象调用了函数studying,所以this指向obj(隐式绑定)
   ```
 
-###### 3.6 绑定规则二：隐式绑定：
+#### 1.6 绑定规则二：隐式绑定：
 
 * 通过某个对象进行调用：
 
@@ -217,7 +217,7 @@ console.log(this)
   obj3.bar()  // 对象obj3调用了函数bar，因此this指向发起调用的obj3对象
   ```
 
-###### 3.7 绑定规则三：显示绑定：
+#### 1.7 绑定规则三：显示绑定：
 
 * 隐式绑定有一个前提条件：
 
@@ -301,7 +301,7 @@ console.log(this)
   newFoo()
   ```
 
-###### 3.8 绑定规则四：new绑定：
+#### 1.8 绑定规则四：new绑定：
 
 * JavaScript中的函数可以当做一个类的构造函数来使用，也就是使用new关键字
 
@@ -330,9 +330,9 @@ console.log(this)
   console.log(p2.name, p2.age);
   ```
 
-##### 4. this其他补充
+### 2. this其他补充
 
-###### 4.1 一些内置函数的this分析
+#### 2.1 一些内置函数的this分析
 
 ```javascript
 // 1.setTimeout函数，定时器
@@ -405,7 +405,7 @@ console.log(this)
 // }, 'ddd') // find接受第二个参数来改变this的指向
 ```
 
-###### 4.2 规则优先级
+#### 2.2 规则优先级
 
 1. 默认规则的优先级最低：
 
@@ -489,9 +489,9 @@ console.log(this)
 
    * **new绑定 > 显示绑定(apply/call/bind) > 隐式绑定(obj.foo()) > 默认绑定(独立函数调用)**
 
-##### 5. 特殊绑定
+### 3. 特殊绑定
 
-###### 5.1 忽略显示绑定：null/undefined
+#### 3.1 忽略显示绑定：null/undefined
 
 ```javascript
 function foo() {
@@ -511,7 +511,7 @@ let bar = foo.bind(null)
 bar()  // 输出结果:window
 ```
 
-###### 5.2 间接函数引用
+#### 3.2 间接函数引用
 
 ```javascript
 let obj1 = {
@@ -533,7 +533,7 @@ let obj2 = {
 // 否则编辑器无法正确解析，不知道代码结束没有，会把该行代码与上面的代码看成是一个整体，导致代码报错
 ```
 
-###### 5.3 箭头函数 arrow function
+#### 3.3 箭头函数 arrow function
 
 * 箭头函数是ES6新增的一种编写函数的方法，并且它比函数表达式更加简洁
 
@@ -605,7 +605,7 @@ let obj2 = {
   // let bar = () => ({name:'kobe', age:18})  // 注意：箭头函数执行体只有一行代码对象时，简写需要将函数执行体放入()中，当成一个整体
   ```
 
-###### 5.4 ES6箭头函数—this获取问题
+#### 3.4 ES6箭头函数—this获取问题
 
 * 箭头函数不使用this的四种标准规则(也就是不绑定this)，而是根据外层作用域来决定this
 
@@ -645,9 +645,9 @@ let obj2 = {
   obj.getData()  // 隐式绑定，改变this的指向为指向obj对象
   ```
 
-##### 6. this面试题
+### 4. this面试题
 
-###### 6.1 面试题一
+#### 4.1 面试题一
 
 ```javascript
 let name = 'window';
@@ -668,7 +668,7 @@ function sayName() {
 sayName()
 ```
 
-###### 6.2 面试题二
+#### 4.2 面试题二
 
 ```javascript
 var name = 'window'
@@ -708,5 +708,76 @@ person1.foo4.call(person2)()  // person2,显示绑定和箭头函数不绑定thi
 person1.foo4().call(person2)  // person1,隐式绑定和箭头函数不绑定this，箭头函数的this由外层作用域决定，这里的外层作用域是foo4函数作用域
 ```
 
+#### 4.3 面试题三
 
+```javascript
+var name = 'window'
+function Person(name) {
+  this.name = name
+  this.foo1 = function () {
+    console.log(this.name)
+  },
+    this.foo2 = () => console.log(this.name),
+    this.foo3 = function() {
+    return function () {
+      console.log(this.name)
+      }
+    },
+    this.foo4 = function () {
+    return () => {
+      console.log(this.name)
+    }
+  }
+}
+
+let person1 = new Person('person1')
+let person2 = new Person('person2')
+
+// person1.foo1()  // person1,隐式绑定
+// person1.foo1.call(person2)  // person2,显示绑定
+
+// person1.foo2()  // person1,箭头函数不绑定this,外层作用域决定箭头函数this指向,此时外层作用域是person1函数作用域
+// person1.foo2.call(person2)  // person1,箭头函数不绑定this,外层作用域决定箭头函数this指向,此时外层作用域是person1函数作用域
+
+// person1.foo3()()  // window,独立函数调用
+// person1.foo3.call(person2)()  // window,独立函数调用
+// person1.foo3().call(person2)  // person2,显示绑定
+
+// person1.foo4()()  // person1,箭头函数不绑定this,外层作用域决定箭头函数this指向,此时外层作用域是person1函数作用域
+// person1.foo4.call(person2)()// person2,箭头函数不绑定this,外层作用域决定箭头函数this指向,此时外层作用域是person2函数作用域
+// person1.foo4().call(person2)// person1,箭头函数不绑定this,外层作用域决定箭头函数this指向,此时外层作用域是person1函数作用域
+```
+
+#### 4.4 面试题四
+
+```javascript
+var name = 'window'
+function Person(name) {
+  this.name = name
+  this.obj = {
+    name:'obj',
+    foo1:function () {
+      return function () {
+        console.log(this.name)
+      }
+    },
+    foo2:function () {
+      return () => {
+        console.log(this.name)
+      }
+    }
+  }
+}
+
+let person1 = new Person('person1')
+let person2 = new Person('person2')
+
+// person1.obj.foo1()()  // window,独立函数调用
+// person1.obj.foo1.call(person2)()  // window,独立函数调用
+// person1.obj.foo1().call(person2)  // person2,显示绑定
+
+// person1.obj.foo2()()  // obj,箭头函数不绑定this,外层作用域决定了箭头函数的this,此时的外层作用域是foo2函数作用域
+// person1.obj.foo2.call(person2)()  // person2,箭头函数不绑定this,外层作用域决定了箭头函数的this,此时的外层作用域是foo2函数作用域
+// person1.obj.foo2().call(person2)  // obj,箭头函数不绑定this,外层作用域决定了箭头函数的this,此时的外层作用域是foo2函数作用域
+```
 

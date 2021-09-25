@@ -1170,11 +1170,80 @@ person1.foo4.call(person2)()  // person2,显示绑定和箭头函数不绑定thi
 person1.foo4().call(person2)  // person1,隐式绑定和箭头函数不绑定this，箭头函数的this由外层作用域决定，这里的外层作用域是foo4函数作用域
 ```
 
+###### 6.3 面试题三
+
+```javascript
+var name = 'window'
+function Person(name) {
+  this.name = name
+  this.foo1 = function () {
+    console.log(this.name)
+  },
+    this.foo2 = () => console.log(this.name),
+    this.foo3 = function() {
+    return function () {
+      console.log(this.name)
+      }
+    },
+    this.foo4 = function () {
+    return () => {
+      console.log(this.name)
+    }
+  }
+}
+
+let person1 = new Person('person1')
+let person2 = new Person('person2')
+
+// person1.foo1()  // person1,隐式绑定
+// person1.foo1.call(person2)  // person2,显示绑定
+
+// person1.foo2()  // person1,箭头函数不绑定this,外层作用域决定箭头函数this指向,此时外层作用域是person1函数作用域
+// person1.foo2.call(person2)  // person1,箭头函数不绑定this,外层作用域决定箭头函数this指向,此时外层作用域是person1函数作用域
+
+// person1.foo3()()  // window,独立函数调用
+// person1.foo3.call(person2)()  // window,独立函数调用
+// person1.foo3().call(person2)  // person2,显示绑定
+
+// person1.foo4()()  // person1,箭头函数不绑定this,外层作用域决定箭头函数this指向,此时外层作用域是person1函数作用域
+// person1.foo4.call(person2)()// person2,箭头函数不绑定this,外层作用域决定箭头函数this指向,此时外层作用域是person2函数作用域
+// person1.foo4().call(person2)// person1,箭头函数不绑定this,外层作用域决定箭头函数this指向,此时外层作用域是person1函数作用域
+```
+
+###### 6.4 面试题四
+
+```javascript
+var name = 'window'
+function Person(name) {
+  this.name = name
+  this.obj = {
+    name:'obj',
+    foo1:function () {
+      return function () {
+        console.log(this.name)
+      }
+    },
+    foo2:function () {
+      return () => {
+        console.log(this.name)
+      }
+    }
+  }
+}
+
+let person1 = new Person('person1')
+let person2 = new Person('person2')
+
+// person1.obj.foo1()()  // window,独立函数调用
+// person1.obj.foo1.call(person2)()  // window,独立函数调用
+// person1.obj.foo1().call(person2)  // person2,显示绑定
+
+// person1.obj.foo2()()  // obj,箭头函数不绑定this,外层作用域决定了箭头函数的this,此时的外层作用域是foo2函数作用域
+// person1.obj.foo2.call(person2)()  // person2,箭头函数不绑定this,外层作用域决定了箭头函数的this,此时的外层作用域是foo2函数作用域
+// person1.obj.foo2().call(person2)  // obj,箭头函数不绑定this,外层作用域决定了箭头函数的this,此时的外层作用域是foo2函数作用域
+```
 
 
-
-
- 
 
 #### 第八课 基于对象的封装、原型链
 
