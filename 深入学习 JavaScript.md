@@ -1172,10 +1172,6 @@ person1.foo4().call(person2)  // person1,隐式绑定和箭头函数不绑定thi
 
 
 
-
-
- 
-
 #### 第八课 基于对象的封装、原型链
 
 * with语句(了解)
