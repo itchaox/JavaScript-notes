@@ -781,3 +781,12 @@ let person2 = new Person('person2')
 // person1.obj.foo2().call(person2)  // obj,箭头函数不绑定this,外层作用域决定了箭头函数的this,此时的外层作用域是foo2函数作用域
 ```
 
+### 关于this入嘉的建议
+
+* this是指函数的执行上下文
+* 直接调用函数是调用window对象上面的函数，this还是指向他的调用者 
+* 记住this指向函数的调用者，谁调用了这个函数，函数里的this就是谁。
+  箭头函数没有自己的this，他的this是最近的上层函数的this，且他的this并不是动态的 而是在定义时就确认了。
+  call apply bind可以改变this的指向 new操作符中的this就是new出来的那个对象
+* 然后再去深入了解执行上下文堆栈，call apply bind的实现原理，new的作用，及其实现原理，手写等。把这些链接起来。形成一个完整的知识体系。
+
