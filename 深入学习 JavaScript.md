@@ -1243,6 +1243,203 @@ let person2 = new Person('person2')
 // person1.obj.foo2().call(person2)  // obj,箭头函数不绑定this,外层作用域决定了箭头函数的this,此时的外层作用域是foo2函数作用域
 ```
 
+#### 第十二课 ES6内容(重要)
+
+##### 1.class 关键字
+
+###### 1.1 class类的声明
+
+```javascript
+// 类的声明
+class Person {
+
+}
+
+// function Peroson() {
+//
+// }
+
+// 类的表达式
+// let person = class {
+//
+// }
+
+// 研究一下类的特点
+console.log(Person.prototype)
+console.log(Person.prototype.__proto__)
+console.log(Person.prototype.constructor)  // constructor指向函数本身
+console.log(typeof Person)
+let p = new Person()
+p.__proto__ = Person.prototype
+console.log(p.__proto__ === Person.prototype)
+```
+
+###### 1.2 class类的构造函数
+
+```javascript
+// 类的声明
+class Person {
+  // 类的构造函数:constructor
+  // 注意:一个类只能有一个构造函数
+  // 1.在内存中创建一个对象
+  // 2.将类的原型prototype赋值给创建出来的对象 moni.__proto__ = Person.prototype
+  // 3.将对象赋值给函数的this:new绑定 this  = moni
+  // 4.执行函数体中的代码
+  // 5.自动返回创建出来的对象
+  constructor(name, age) {
+    console.log(this.name = name)
+    console.log(this.age = age)
+  }
+}
+
+let p = new Person('itchao', 18)  // 输出结果:itchao 18
+console.log(p)  // 输出结果:Person { name: 'itchao', age: 18 }
+```
+
+###### 1.3 class中的方法定义
+
+```javascript
+class Person {
+  constructor(name, age) {
+    this.name =name
+    this.age = age
+    this._city = '成都市'
+  }
+
+  // 普通的实例方法
+  // 创建出来的对象进行访问
+  eating() {
+    console.log(this.name + ' eating')
+  }
+
+  running() {
+    console.log(this.age, this.name + ' running')
+  }
+
+  // 类的访问器方法
+  get city() {
+    console.log('拦截访问操作!')
+    return this._city
+  }
+
+  set city(city) {
+    console.log('拦截测试操作!!')
+    this._city = city
+  }
+
+  // 类的静态方法(类方法)
+  // 直接通过类名访问静态方法
+  // Person.createPerson()
+  static createPerson() {
+    let nameIndex = Math.floor(MAth.random() * nams.length)
+    let name = name[nameIndex]
+    return new Person(name)
+
+  }
+}
+
+let p = new Person('kobe', 18)
+p.eating()
+p.running()
+p.city = '北京市'
+// console.log(Object.getOwnPropertyDescriptors(Person.prototype))
+```
+
+###### 1.4 class中实现继承
+
+* **super关键字:**
+
+  * 在子(派生)类的构造函数中使用this或者返回默认对象之前,必须先通过super调用父类的构造函数!
+
+  * super的使用位置有三个:子类的构造函数、实例方法、静态方法
+
+    ```javascript
+    class Person {
+      constructor(name, age) {
+        this.name = name
+        this.age = age
+      }
+    
+      eating() {
+        console.log(this.name + ' eating')
+      }
+    
+      running() {
+        console.log(this.age + ' 岁的人在跑步')
+      }
+    }
+    
+    // Student称之为子类(派生类)
+    class Student extends Person {
+      // JS引擎在解析子类的时候就有要求,如果我们有实现继承
+      // 那么子类的构造方法中,在使用this之前
+      constructor(name, age, sno) {
+        super(name, age)  // 必须调用父类的构造函数
+        this.sno = sno
+      }
+    
+      // 类对父类的方法进行重写,就是父类和子类的方法相同,子类的方法覆盖了父类的方法
+      eating() {
+        console.log('学生在吃饭!!!')
+      }
+    
+      // 重写
+      foo() {
+        super.eating()  // 复用父类的方法
+        console.log('子类重写父类方法!')
+      }
+    
+      //重写静态方法
+      static staticMethod() {
+        console.log('StudentStaticMethod')
+      }
+    
+    }
+    
+    let p = new Student('kobe', 18, 81)
+    console.log(p)
+    p.eating()
+    p.running()
+    // p.foo = '绵阳市'
+    
+    // console.log(Object.getOwnPropertyDescriptors(p.__proto__.__proto__))
+    ```
+
+###### 1.5 ES6转ES5的代码(没太听懂,需要再听一次)
+
+```javascript
+class Person {
+  // constructor(name, age) {
+  //   this.name = name
+  //   this.age = age
+  // }
+}
+
+// let p = new Person('kobe', 18)
+// console.log(p)
+
+// babael转换
+function _callCallCheck(instance, Constructor) {
+  if(! (instance instanceof  Constructor)) {
+    throw new TypeError('Cannot call a class a function')
+  }
+}
+let foo = function Person() {
+
+}
+
+foo()
+
+//  /*#__PURE__*/  纯函数
+// webpack 压缩 tree-shaking
+// 这个函数没作用
+
+```
+
+###### 1.6 ES6转ES5的继承(没听到,需要再听!)
+
+
+
 
 
 #### 第八课 基于对象的封装、原型链
