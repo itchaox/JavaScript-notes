@@ -1464,7 +1464,380 @@ let foo = new Student('kobe', 18,81)
 console.log(foo)
 ```
 
+##### 2. 继承内置类
 
+```javascript
+// 对系统类进行扩展
+class HYArray extends Array {
+  firstItem() {
+    return this[0]
+  }
+
+  lastItem(){
+    return this[this.length-1]
+  }
+}
+
+
+let arr = new Array(1, 2, 3)
+let hyArr = new HYArray(1, 7 ,9 ,10)
+
+console.log(arr)
+
+console.log(hyArr.firstItem())
+console.log(hyArr.lastItem())
+```
+
+##### 3. js实现混入效果
+
+```javascript
+class  Person{
+
+}
+
+// 实现js混入效果
+function mixinRunner(BaseClass) {
+  class NewClass extends  BaseClass {
+    running() {
+      console.log('running!')
+    }
+  }
+  return NewClass
+}
+// 在JS中类只能有一个父类:单继承
+class  Student extends Person {
+
+}
+
+let NewStudent = mixinRunner(Student)
+let ns = new NewStudent()
+
+ns.running()  // 输出结果:running
+```
+
+##### 4. JavaScript多态
+
+* 多态:(英语:polymorphism)指为不同数据类型的实体提供统一的接口,或使用一个单一的符号来表示多个不同的类型
+
+  * 总结:不同的数据类型进行同一个操作,表现出不同的行为,就是多态的体现
+
+* JavaScript代码:
+
+  ```javascript
+  // 多态:当对不同的数据类型执行同一个操作时,如果表现出来的行为(形态)不一样.就是多态的体现
+  
+  function foo(foo) {
+    console.log(foo.getArea)
+  }
+  
+  let obj1 = {
+    name:'itchao',
+    getArea() {
+      return 100
+    }
+  }
+  
+  class  Person {
+    getArea() {
+      return 200
+    }
+  }
+  
+  let p = new Person()
+  foo(obj1)
+  foo(p)
+  
+  function sum(num1, num2) {
+    return num1 + num2
+  }
+  
+  sum(20, 30)
+  sum('a', 'b')
+  ```
+
+* TypeScript代码:
+
+  ```typescript
+  // 传统的面向对象多态有三个前提:
+  // 1. 必须有继承(是多态的前提)
+  // 2. 必须有重写
+  // 3. 必须有父类引用指向子类对象
+  
+  
+  
+  // Shape形状
+  class Shape {
+      getArea() {
+  
+      }
+  }
+  
+  class  Rectangle extends  Shape {
+  
+  }
+  
+  class  Circle extends  Shape {
+  
+  }
+  
+  let r = new Rectangle()
+  let c = new Circle()
+  
+  
+  // 多态:当对不同的数据类型执行同一个操作时,如果表现出来的行为(形态)不一样.就是多态的体现
+  function calcArea(shape:Shape) {
+      console.log(shape.getArea())
+  }
+  
+  calcArea(r)
+  calcArea(c)
+  ```
+
+##### 5. 字面增强量
+
+```javascript
+let name = 'itchao'
+let age = 18
+
+let obj = {
+  // 1. 属性简写
+  name,
+  // 原生属性
+  age:age,
+
+  // 2. 简写方法
+  foo() {
+  },
+  // 原生方法
+  bar:function(){
+},
+
+  // 3. 计算属性名
+  [name + 123]:'coderwhy'
+}
+
+console.log(obj)
+
+输出结果
+// {
+//   name: 'itchao',
+//     age: 18,
+//   foo: [Function: foo],
+//   bar: [Function: bar],
+//   itchao123: 'coderwhy'
+// }
+
+```
+
+##### 6. 解构
+
+* 数组结构:
+
+  ```javascript
+  let names = ['kobe', 'coderwhy', 'itchao']
+  // 原生写法
+  // let item1 = names[0]
+  // let item2 = names[1]
+  // let item3 = names[2]
+  
+  // 数组解构: []
+  let [name1, name2, name3] = names
+  console.log(name1, name2, name3)
+  
+  // 只解构后面元素
+  let [, name4, name5] = names
+  console.log(name4, name5)
+  
+  // 解构出一个元素,后面的元素放到一个新数组中
+  let [item1, ...newNames] = names
+  console.log(item1)
+  console.log(newNames)
+  
+  // 解构的默认值
+  let [x1, x2, x3, x4 = 'www'] = names
+  console.log(x1, x2, x3, x4)
+  ```
+
+* 对象结构
+
+  ```javascript
+  // 对象解构
+  
+  let obj = {
+    name:'itchao',
+    age:19,
+    height:1.85
+  }
+  
+  // let {name, age, height} = obj
+  // console.log(name, age, height)
+  
+  // 对象按照key进行查找配对解构,所以可以不按顺序解构
+  
+  let {age} = obj
+  console.log(age)
+  
+  // 更改对象中的名字,取出obj的值,然后赋值给新的属性名itemName
+  let {name: itemName} = obj
+  console.log(itemName)
+  
+  // 给对象属性默认值(创建新的属性):如果对象没有值,则显示默认值
+  let {address:newAddress = '成都市'}  = obj
+  console.log(newAddress)
+  
+  // 给对象属性默认值:如果对象没有值,则显示默认值
+  let {city = '北京市'} = obj
+  
+  console.log(obj.city)
+  ```
+
+##### 7. let/const
+
+###### 7.1 基本使用
+
+```javascript
+// let 和 var 使用方法区别不大
+var foo = 'itchao'
+
+let bar = 'kobe'
+
+// const 定义常量
+
+const name = 'coderwhy'
+// name = 123  // const定义的变量,无法再次赋值
+
+// 注意事项一:const 本质上是传递的值不能修改
+// 但是如果传递的是一个引用类型(内存地址)
+// 那么不能修改引用类型的内存地址,但是可以直接修改引用类型的属性
+const obj = {
+  name:'james'
+}
+
+// obj = ''  // 不能直接给对象进行赋值
+obj.name = 'curry'  // 但是可以直接给对象内的属性赋值
+
+// 注意事项二: 通过let/const定义的变量名是不可以重复定义
+// var 定义变量,可以重复命名
+// let/const 定义变量,不可以重复命名
+```
+
+###### 7.2 作用域提升
+
+```javascript
+console.log(foo)
+var foo = 'itchao'
+
+// let/const 不存在变量提升,不能在没有定义前访问
+console.log(bar)  // bar声明出来了,但是没办法访问
+let bar = 'kobe'
+// let/const定义变量,bar被创建出来了,但是没办法访问,所以不叫作用域提升(暂时性死区)
+// 作用域提升:能提前访问
+```
+
+###### 7.3 和window关系
+
+```javascript
+var foo = 'foo'
+console.log(window.foo)
+
+var name = 'itchao'
+console.log(window.name)
+
+window.message = 'hello message'
+console.log(message)
+```
+
+###### 7.4 ES5作用域理解
+
+```javascript
+// ES5
+
+// 块代码
+{
+  // 表达式
+  let foo = 'foo'
+}
+
+// 声明对象
+let obj = {
+  name:'itchao',
+  age:18
+}
+
+// ES5没有块级作用域
+// 块代码
+{
+  let foo = 'kobe'
+}
+
+// 在ES5中只有两个地方会形成作用域
+// 1. 全局作用域
+// 2. 局部作用域(函数作用域)
+function  foo() {
+  let height = 1.85
+}
+```
+
+###### 7.5 ES6块级作用域理解
+
+```javascript
+// 代码块
+
+// ES6的块级作用域
+// 对let/const/function/class声明的类型是有效的
+{
+  var foo = 'itchao'
+  let name = 'kobe' // let声明外界无法访问
+  function bar(){}  // 函数声明外界无法访问(大部分浏览器有不同实现的[大部分浏览器为了兼容以前的代码,让function是没哟块级作用域])
+  class Person{ }  //  class声明外界无法访问
+}
+
+console.log(foo)
+```
+
+###### 7.6 if-switch-for块级作用域
+
+```javascript
+// {
+//
+// }
+//
+// // if语句代码是块级作用域
+// if(true) {
+//   var foo = 'foo'
+//   let bar = 'bar'
+// }
+//
+// // if语句代码是块级作用域
+// switch (color) {
+//   case 'red':
+//     var age = 19
+// }
+
+// for语句代码时块级作用域
+for (var i= 0; i < 10; i++) {
+
+}
+console.log(i)  // 可以访问i,因为var声明的没有块级作用域
+
+
+for (let j= 0; j < 10; j++) {
+
+}
+console.log(j)  // 无法访问j,因为let声明的有块级作用域
+```
+
+###### 7.7 块级作用域应用场景
+
+```javascript
+let btns = document.getElementsByTagName('button')
+
+for(let i = 0;i < btns.length ; i++) {
+  btns[i].onclick = function() {
+    console.log(`第${i}个按钮被点击`)
+  }
+}
+```
 
 
 
