@@ -1243,6 +1243,196 @@ let person2 = new Person('person2')
 // person1.obj.foo2().call(person2)  // obj,箭头函数不绑定this,外层作用域决定了箭头函数的this,此时的外层作用域是foo2函数作用域
 ```
 
+##### 7. call-apply-bind
+
+###### 7.1 call函数实现
+
+```javascript
+// 给所有函数添加一个hycall方法(实现call方法)
+
+Function.prototype.hycall = function (thisArg, ...args) {
+  // 在这里可以去执行调用的函数(foo)
+  // 问题:得可以去获取哪一个函数执行了hycall
+  // 1. 获取需要被执行的函数,this
+  // this()
+  // 2. 让thisArg转成对象类型(防止它传入非对象类型)
+  thisArg = thisArg ?  Object(thisArg) : window
+  // 3. 调用需要被执行的函数
+  thisArg.this = this
+   let result = thisArg.this(...args)
+  delete thisArg
+
+  // 4. 将最后的结果返回出去
+  return result
+}
+
+function foo() {
+  console.log('foo', this)
+}
+
+function sum(num1, num2) {
+  return num1 + num2
+}
+
+// 系统的函数call方法
+foo.call() // 输出结果:window
+let result = sum.call({}, 20, 30)
+console.log('系统调用结果:', result)
+
+
+// 自己实现的hycall方法
+// 默认进行this隐式绑定
+// foo.hycall(123)
+let result1 = sum.hycall('abc',1231, 612)
+console.log('hycall调用结果:', result1)
+```
+
+###### 7.2 ES6剩余参数
+
+```javascript
+// ES6剩余参数
+
+function sum(num1, num2, num3, ...args) {
+  console.log(num1, num2 , num3)
+  console.log(args)  // args是一个数组类型
+}
+
+sum(1, 2, 3, 4, 5 ,6 , 7, 8, 9)
+
+function sum1(...args) {
+  console.log(args)
+}
+
+sum1(1)
+sum1(1, 3)
+sum1(1, 3, 4, 6)
+
+// 展开运算符(挨个取出数组内的元素)
+let names = ['kobe', 'coderwhy', 'itchao']
+let newNames = [...names]
+
+function foo(name1, name2, name3) {
+  console.log(name1 + ' ' + name2 + ' ' +name3)
+}
+
+foo(...names)
+```
+
+###### 7.3 apply函数实现
+
+```javascript
+// 给所有函数添加一个hyapply方法(实现apply方法)
+
+Function.prototype.hyapply= function (thisArg, argArray) {
+  // 1. 获取到要执行函数
+  let fn = this
+  // 2. 处理绑定的thisArg
+  thisArg = thisArg ? Object(thisArg) : window
+  // 3. 调用要执行函数
+  thisArg.fn = fn
+  var result
+  // if(!argArray){  // 没有传参数
+  //   result = thisArg.fn()
+  // }else {  // 传递了参数
+  //   result = thisArg.fn(...argArray)
+  // }
+  // argArray = argArray ? argArray : []
+  argArray = argArray || []  // 判断数组是否为空,如果为空则传入空数组
+  result = thisArg.fn(...argArray)
+  delete  thisArg.fn
+  // 4. 返回结果
+  return result
+}
+
+function sum(num1, num2) {
+  console.log('sum函数被调用:',this, num1, num2)
+  return num1 + num2
+}
+
+function foo(num3) {
+  console.log('数字3:', this, num3)
+  return num3
+}
+
+function bar() {
+  console.log('函数bar', this)
+}
+
+// 系统调用实现apply方法
+// let sum1 = sum.apply('aaa',[10, 26])  // apply调用时参数为数组形式
+// console.log(sum1)
+
+// 自己实现hyapply方法
+// let result = sum.hyapply('bbb',[100, 200])
+// console.log(result)
+//
+// let result1 = foo.hyapply('ccc', [80])
+// console.log(result1)
+
+let result2 = bar.hyapply('ddd',[])
+console.log('空数组:', result2)
+```
+
+###### 7.4 bind函数实现
+
+```javascript
+// 给所有函数添加一个hybind方法(实现bind方法)
+
+Function.prototype.hybind = function(thisArg, ...argArray) {
+  // console.log('在原型上添加hybind方法')
+
+  // 1. 获取需要绑定的函数
+  let fn = this
+  // 2. 绑定this
+  thisArg = (thisArg !== null && thisArg !== undefined) ? Object(thisArg) : window
+  function proxyFn(...args) {
+    // 3. 将函数放到thisArg中调用
+    thisArg.fn = fn
+    // 特殊:对两个传入参数进行合并
+    let finalArgs = [...argArray, ...args]
+    let result =  thisArg.fn(...finalArgs)
+    delete thisArg.fn
+    return result
+  }
+  // 返回结果
+  return proxyFn
+}
+
+
+function foo() {
+  console.log('foo函数:', this)
+  return 180
+}
+
+function sum(num1, num2, num3, num4) {
+  console.log(num1, num2, num3, num4)
+}
+
+// 系统调用bind方法
+// let bar = foo.bind('aaa')
+// bar()
+//
+// bind时传参
+// let sum1 = sum.bind('bbb', 1, 20, 40 ,60)
+// sum1()
+// 调用时传参
+// let sum2 = sum.bind('ccc')
+// sum2(10, 30, 50, 70)
+// 依次传参
+// let sum3 = sum.bind('ddd', 10, 50)
+// sum3(90, 100)
+
+// 使用自己定义的hybind方法
+// let bar = foo.hybind('aaa')
+// let result = bar()
+// console.log(result)
+
+let newSum = sum.hybind('bbb', 10 , 200)
+let result = newSum(20, 500)
+```
+
+
+
 #### 第十二课 ES6内容(重要)
 
 ##### 1.class 关键字
