@@ -1,6 +1,6 @@
 # 深入学习  JavaScript
 
-#### 第一课 浏览器的工作原理和V8引擎
+#### 浏览器的工作原理和V8引擎
 
 * V8引擎
   1. 代码被解析,v8引擎内部会创建一个对象(GlobalObject -> go)
@@ -10,11 +10,13 @@
 
 ---
 
-#### 第二课 内存管理和内存泄漏
+#### 内存管理和内存泄漏
 
-* 查找变量的规则：
+###### 查找变量
 
-  * 真实的查找路径是沿着**作用域链依次向上查找**
+* 查找变量规则：
+
+  * 真实查找路径是沿着**作用域链依次向上查找**
 
   * 例子：
 
@@ -32,133 +34,135 @@
       console.log(name)  // 输出结果：itchao
       ```
 
-  * 函数嵌套：
+* 函数嵌套：
 
-    * ```javascript
-      var name = 'kobe'
-      
-      player(234)
-      function player(num){
-          console.log(age)  // 输出结果：undefined
-          var age = 18
-          var number = 8
-          function man(){
-              console.log(name)  // 输出结果：kobe
-          }
-          man()
-      }
-      ```
+  * ```javascript
+    var name = 'kobe'
+    
+    player(234)
+    function player(num){
+        console.log(age)  // 输出结果：undefined
+        var age = 18
+        var number = 8
+        function man(){
+            console.log(name)  // 输出结果：kobe
+        }
+        man()
+    }
+    ```
 
-  * 函数调用函数的执行过程：
+* 函数调用函数的执行过程：
 
-    * ```javascript
-      // 函数调用函数的执行过程
-      // 函数的父级作用域和它的定义位置有关系，与调用位置无关系
-      var name ='kobe'
-      
-      function foo(){
-          console.log(name)  // 输出结果：kobe
-      }
-      
-      function bar(){
-          var name = 'itchao'
-          foo()
-      }
-      
-      bar()
-      ```
+  * ```javascript
+    // 函数调用函数的执行过程
+    // 函数的父级作用域和它的定义位置有关系，与调用位置无关系
+    var name ='kobe'
+    
+    function foo(){
+        console.log(name)  // 输出结果：kobe
+    }
+    
+    function bar(){
+        var name = 'itchao'
+        foo()
+    }
+    
+    bar()
+    ```
 
-* 作用域提升面试题：
+###### 作用域提升面试题：
 
-  * 作用域补充：
+* 作用域补充：
 
-    * ```javascript
-      // 作用域补充
-      function foo(){
-          // var m = 100  //  这样写会报错：未定义变量m，因为这里定义的是局部变量，外界无法进行访问
-          m = 100  // 前面没写var相当于是全局变量，外界可以进行访问(但是建议不要这样写，不符合规范！面试可能会问，知道就行！)
-      }
-      
-      foo()
-      console.log(m)
-      ```
+  * ```javascript
+    // 作用域补充
+    function foo(){
+        // var m = 100  //  这样写会报错：未定义变量m，因为这里定义的是局部变量，外界无法进行访问
+        m = 100  // 前面没写var相当于是全局变量，外界可以进行访问(但是建议不要这样写，不符合规范！面试可能会问，知道就行！)
+    }
+    
+    foo()
+    console.log(m)
+    ```
 
-  * 面试题一：
+* 面试题一：
 
-    * ```javascript
-      // 面试题一
-      var n = 100
-      function foo(){
-        n = 200
-      }
-      foo()
-      
-      console.log(n)  // 输出结果：200
-      ```
+  * ```javascript
+    // 面试题一
+    var n = 100
+    function foo(){
+      n = 200
+    }
+    foo()
+    
+    console.log(n)  // 输出结果：200
+    ```
 
-  * 面试题二：
+* 面试题二：
 
-    * ```javascript
-      // 面试题二
-      function foo(){
-          console.log(n)  // 输出结果：undefined(原因：存在AO，有变量提升)
-          var n = 200
-          console.log(n)  // 输出结果：200
-      }
-      
-      var n =100
-      foo()
-      ```
+  * ```javascript
+    // 面试题二
+    function foo(){
+        console.log(n)  // 输出结果：undefined(原因：存在AO，有变量提升)
+        var n = 200
+        console.log(n)  // 输出结果：200
+    }
+    
+    var n =100
+    foo()
+    ```
 
-  * 面试题三：
+* 面试题三：
 
-    * ```javascript
-      // 面试题三
-      var n = 100
-      function foo1(){
-          console.log(n)  // 输出结果：100（原因：函数的父级作用域是在定义的时候就决定好了，和调用位置无关）
-      }
-      
-      function foo2(){
-          var n = 200
-          console.log(n)  // 输出结果：200（原因：查找变量按照作用域链依次向上查找）
-          foo1()
-      }
-      
-      foo2()
-      console.log(n)  // 输出结果：100（原因：查找变量按照作用域链依次向上查找）
-      ```
+  * ```javascript
+    // 面试题三
+    var n = 100
+    function foo1(){
+        console.log(n)  // 输出结果：100（原因：函数的父级作用域是在定义的时候就决定好了，和调用位置无关）
+    }
+    
+    function foo2(){
+        var n = 200
+        console.log(n)  // 输出结果：200（原因：查找变量按照作用域链依次向上查找）
+        foo1()
+    }
+    
+    foo2()
+    console.log(n)  // 输出结果：100（原因：查找变量按照作用域链依次向上查找）
+    ```
 
-  * 面试题四：
+* 面试题四：
 
-    * ```javascript
-      // 面试题四
-      var a = 100
-      function foo(){
-          console.log(a)  // 输出结果：undefined（原因：函数在运行前会编译，编译的时候a为undefined，AO:{a:undefined}）
-          return  // 退出函数 
-          var a = 100
-      }
-      
-      foo()
-      ```
+  * ```javascript
+    // 面试题四
+    var a = 100
+    function foo(){
+        console.log(a)  // 输出结果：undefined（原因：函数在运行前会编译，编译的时候a为undefined，AO:{a:undefined}）
+        return  // 退出函数 
+        var a = 100
+    }
+    
+    foo()
+    ```
 
-  * 面试题五：
+* 面试题五：
 
-    * ```javascript
-      // 面试题五
-      function foo(){
-          var a = b = 100
-          // 转成下面两行代码
-          // var a = 100
-          // b = 100
-      }
-      
-      foo()
-      
-      console.log(a)  // 输出结果：报错，未定义变量a，因为这里的a是定义的局部变量
-      console.log(b)  // 输出结果：100
-      ```
+  * ```javascript
+    // 面试题五
+    function foo(){
+        var a = b = 100
+        // 转成下面两行代码
+        // var a = 100
+        // b = 100
+    }
+    
+    foo()
+    
+    console.log(a)  // 输出结果：报错，未定义变量a，因为这里的a是定义的局部变量
+    console.log(b)  // 输出结果：100
+    ```
+
+###### 内存管理
 
 * 认识**内存管理:**
   * 概念:不管什么样的编程语言,代码在执行过程中都是需要给它分配内存,不同的是某些编程语言需要手动管理内存,某些编程语言会自动管理内存
@@ -175,7 +179,11 @@
   * 内存分配方式的区别:
     * JavaScript对于**基本数据类型内存的分配**会在执行时,直接在**栈空间**进行分配
     * JavaScript对于**复杂数据类型内存的分配**会在**堆内存**中开辟一块空间,并且将这块空间的指针返回值作为变量引用(因为复杂数据类型保存的是内存地址,所以也被成为引用数据类型)
+
+###### 垃圾回收、内存泄露
+
 * **JavaScript的垃圾回收:**
+  
   * 概念:**内存大小是有限的**,当**内存不再需要**的时候,我们就需要**对其进行释放**,便于**腾出更多内存空间**
   
   * 在手动管理内存的语言中,需要通过一些方式自己来释放不再需要的内存,比如free函数:
@@ -201,36 +209,36 @@
       * 这个算法可以很好的解决循环引用到问题
     * JS引擎比较广泛的采用的就是**标记清除算法,**当然类型于V8引擎为了进行更好的优化,它在算法的实现细节上也会结合一些其他的算法
     
-  * 内存泄露:
   
-    * 概念:用完了的东西该销毁的没有被销毁就是内存泄露
-  
-    * 闭包产生的内存泄露解决办法:
-  
-      * ```javascript
-        function foo(){
-            let name = 'itchao'
-            let age = 18
-            
-            function bar(){
-                console.log(name)
-                console.log(age)
-            }
-            return bar
-        }
-        
-        let fn = foo()
-        fn()
-        
-        // 解决闭包产生内存泄露的办法
-        fn = null
-        foo = null  // 严格意义上的解决内存泄露的办法
-        ```
-  
+* 内存泄露:
+
+  * 概念:用完了的东西该销毁的没有被销毁就是内存泄露
+
+  * 闭包产生的内存泄露解决办法:
+
+    * ```javascript
+      function foo(){
+          let name = 'itchao'
+          let age = 18
+          
+          function bar(){
+              console.log(name)
+              console.log(age)
+          }
+          return bar
+      }
+      
+      let fn = foo()
+      fn()
+      
+      // 解决闭包产生内存泄露的办法
+      fn = null
+      foo = null  // 严格意义上的解决内存泄露的办法
+      ```
 
 ---
 
-#### 第三课 作用域、作用域提升、执行上下文
+#### 作用域、作用域提升、执行上下文
 
 ##### 1. JavaScript函数内容（重要）
 
@@ -1067,7 +1075,7 @@ let obj2 = {
   // let bar = () => ({name:'kobe', age:18})  // 注意：箭头函数执行体只有一行代码对象时，简写需要将函数执行体放入()中，当成一个整体
   ```
 
-###### 5.4 ES6箭头函数—this获取问题
+###### 5.4 箭头函数—this获取
 
 * 箭头函数不使用this的四种标准规则(也就是不绑定this)，而是根据外层作用域来决定this
 
@@ -1394,7 +1402,7 @@ Function.prototype.hybind = function(thisArg, ...argArray) {
     delete thisArg.fn
     return result
   }
-  // 返回结果
+  // 4. 返回结果
   return proxyFn
 }
 
@@ -1431,9 +1439,143 @@ let newSum = sum.hybind('bbb', 10 , 200)
 let result = newSum(20, 500)
 ```
 
+##### 8. arguments
+
+###### 8.1 认识arguments
+
+* arguments是对应于传递给函数的参数的类数组(array-like)对象
+
+  ```javascript
+  function foo(num1, num2, num3) {
+    // [Arguments] {'0':10, '1':80, '2':30}
+    console.log(arguments)
+  }
+  
+  foo(10, 80, 30)
+  ```
+
+* array-like意味着它不是一个数组类型,而是一个对象类型:
+
+  * 但是它却拥有数组的一些特性,比如length,比如可以通过index索引来访问
+
+  * 但是它缺没有数组的一些方法,比如forEach、map等
+
+    ```javascript
+    console.log(arguments.length)
+    console.log(arguments[0])
+    console.log(arguments[1])
+    ```
+
+###### 8.2 arguments基本使用
+
+```javascript
+function foo(num1, num2, num3) {
+  // 类数组对象中（长得像数组，本质是对象）:arguments
+  console.log(num1, num2, num3)  // 输出结果：1 2 3
+  console.log(arguments)  // 输出结果：[Arguments] { '0': 1, '1': 2, '2': 3, '3': 50, '4': 80 }
+
+  // arguments三个常见操作
+  // 1. 获取参数长度
+  console.log(arguments.length)  // 输出结果：5
+  // 2. 根据索引值获取某一个参数
+  console.log(arguments[0])  // 输出结果：1
+  // 3. callee获取当前arguments所在函数
+  console.log(arguments.callee)
+}
+foo(1, 2, 3, 50, 80 )
+```
+
+###### 8.3 arguments转array
+
+```javascript
+function foo(num1, num2) {
+  console.log(arguments)
+  // 自己遍历
+  // let newArray = []
+  // for (let i = 0; i< arguments.length; i++) {
+  //   newArray.push(arguments[i] * 10)
+  // }
+  // console.log(newArray)
+  // 2. arguments转array类型
+  // 2.1 自己遍历arguments中的所有元素
+
+  // 2.2 通过Array.prototype.slice方法将arguments转成array类型
+  let newArray2 = Array.prototype.slice.call(arguments)
+  console.log(newArray2)
+
+  let newArray3 = [].slice.call(arguments)
+  console.log(newArray3)
+
+  // 2.3 ES6语法
+  let newArray4 = Array.from(arguments)
+  console.log(newArray4)
+
+  // 2.4 展开运算符
+  let newArray5 = [...arguments]
+  console.log(newArray5)
+}
+
+foo(1, 2, 23, 50 , 70)
 
 
-#### 第十二课 ES6内容(重要)
+// 额外补充知识点：Array中slice的实现
+// Array.prototype.hyslice = function (start, end) {
+//   let arr = this
+//   start = start || 0
+//   end = end || arr.length
+//   let newArray = []
+//   for(let i = start; i< end; i++) {
+//     newArray.push(arr[i])
+//   }
+//   return newArray
+// }
+//
+// let newArray = Array.prototype.hyslice.call(['aaa', 'bbbb', 'ccc'],1, 2)
+// console.log(newArray)
+
+// let names = ['kobe', 'james', 'curry', 'coderwhy', 'itchao']
+// names.slice
+```
+
+###### 8.4 箭头函数中没有arguments
+
+```javascript
+// 箭头函数中没有arguments，在箭头函数中使用arguments会往上层作用域中去查找对应的arguments
+// 浏览器中没有arguments
+// node中有arguments(node中一个js文件会被当成一个模块，模块会被当成一个函数，该函数会被执行)
+
+// 案例一：
+// let foo = () => {
+//   console.log(arguments)
+// }
+//
+// foo()
+
+// 案例二：
+// 箭头函数没有arguments，在箭头函数中查找arguments会往上层作用域进行查找
+// function foo1() {
+//   let bar = () => {
+//     console.log(arguments)
+//   }
+//   return bar
+// }
+// let fn = foo1(1, 2, 3)
+// fn()
+
+// 案例三：
+// 建议多使用ES6中的省略参数来接收多余的参数
+// let foo2 = (num1, num2, ...args) => {
+//   console.log(num1, num2, args)
+//   console.log(args)
+// }
+// foo2(1, 21, 123, 2132, 12312)
+```
+
+
+
+
+
+#### ES6内容(重要)
 
 ##### 1.class 关键字
 
@@ -2029,9 +2171,7 @@ for(let i = 0;i < btns.length ; i++) {
 }
 ```
 
-
-
-#### 第八课 基于对象的封装、原型链
+#### 严格模式
 
 * with语句(了解)
 
@@ -2047,13 +2187,11 @@ for(let i = 0;i < btns.length ; i++) {
     eval(jsString)
     ```
 
-    
-
   * 不建议使用eval函数:
     * eval代码的可读性非常差(代码的可读性是高质量代码的重要原则)
     * eval是一个字符串,那么可能在执行的过程中被刻意篡改,那么可能会造成被攻击的风险
     * eval的执行必须经过JS解释器,不能被JS引擎优化
-
+  
 * **严格模式(掌握)**
 
   * 在ECMAScript5标准中,JavaScript提出了**严格模式的标准(Strict Mode)**
@@ -2166,7 +2304,9 @@ for(let i = 0;i < btns.length ; i++) {
       * 在严格模式下,自执行函数(默认绑定)会指向undefined
       * 之前编写的代码中,自执行函数我们是没有使用过this直接去引用window
 
-#### 第九课、深入学习对象
+#### 深入学习对象
+
+##### 对象概念
 
 * JavaScript其实支持多重编程范式的,包括**函数式编程和面向对象编程**:
 
@@ -2174,33 +2314,34 @@ for(let i = 0;i < btns.length ; i++) {
   * **key是一个标识符名称,value可以说任意类型**,也可以事**其他对象或者函数类型**
   * 如果值是**一个函数**,那么我们可以称之为是**对象的函数**
 
-* 创建对象的方式:
 
-  * 方式一:通过new Object( )创建
+###创建对象的方式:
 
-    * ```javascript
-      var obj = new Object()
-      obj.name = 'itchao'
-      obj.age = 18
-      obj.height = 1.85
-      obj.eat = function (){
-        console.log('吃东西')
+* 方式一:通过new Object( )创建
+
+  * ```javascript
+    var obj = new Object()
+    obj.name = 'itchao'
+    obj.age = 18
+    obj.height = 1.85
+    obj.eat = function (){
+      console.log('吃东西')
+    }
+    obj.eat()
+    ```
+
+* 方式二:通过字面量创建
+
+  * ```javascript
+    var itchao = {
+      name:'chao',
+      age:18,
+      height:1.88,
+      eat:function (){
+        console.log('在吃冰淇淋!')
       }
-      obj.eat()
-      ```
-
-  * 方式二:通过字面量创建
-
-    * ```javascript
-      var itchao = {
-        name:'chao',
-        age:18,
-        height:1.88,
-        eat:function (){
-          console.log('在吃冰淇淋!')
-        }
-      }
-      itchao.eat()
+    }
+    itchao.eat()
 
 * Object.defineProperty()方法
 
@@ -2284,93 +2425,141 @@ for(let i = 0;i < btns.length ; i++) {
   console.log(obj.name)
   ```
 
-* 创建多个对象的方案:
 
-  * 工厂模式:
+##### 创建多个对象方案:
 
-    * 工厂模式是一种常见的设计模式
+* 工厂模式:
 
-    * 通常我们会有一个工厂方法,通过该工厂方法我们可以产生想要的对象
+  * 工厂模式是一种常见的设计模式
+
+  * 通常我们会有一个工厂方法,通过该工厂方法我们可以产生想要的对象
+
+  * ```javascript
+    // 工厂模式:工厂函数
+    function createPerson(name, age, height, address){
+      let p = {}
+    
+      p.name = name
+      p.age = age
+      p.height = height
+      p.address = address
+      p.eating = function(){
+        console.log(this.name + 'eating')
+      }
+      p.running = function(){
+        console.log(this.name + 'running')
+      }
+      return p
+    }
+    
+    let foo = new createPerson('kobe',18,1.98,'洛杉矶')
+    let foo1 = new createPerson('itchao',19,1.85,'成都')
+    let foo2 = new createPerson('coderwhy',20,1.88,'北京')
+    console.log(foo)
+    console.log(foo1)
+    console.log(foo2)
+    
+    // 工厂模式的缺点(获取不到对象最真实的类型)
+    console.log(foo, foo1, foo2)
+    ```
+
+* **构造函数:**
+
+  * 构造函数也称为构造器(constructor),通常是我们在常见对象时会调用的函数
+
+  * 在其他面向的编程语言里面,构造函数是存在于类中的一个方法,称之为构造方法
+
+  * 但是JavaScript中单构造函数有点不太一样
+
+  * ```javascript
+    function foo(){
+    console.log('foo____')
+    }
+    
+    // 这样调用就是一个普通的函数
+    foo()
+    
+    // 通过new调用函数就变成了构造函数,在JavaScript中任何函数都可以说普通函数也可以说构造函数
+    new foo()
+    ```
+
+  * new操作符调用的作用:
+
+    * 1.在内存中创建一个新的对象(空对象)
+    * 2.这个对象内部的[[prototype]]属性会被赋值为该构造函数的prototype属性
+    * 3.构造函数内部的this,会指向创建出来的新对象
+    * 4.执行函数的内部代码(函数体代码)
+    * 5.如果构造函数没有返回非空对象,则返回创建出来的新对象
+
+  * 构造函数的使用介绍:
 
     * ```javascript
-      // 工厂模式:工厂函数
-      function createPerson(name, age, height, address){
-        let p = {}
+      // 规范:构造函数的首字母一般都是大写!
+      function Person(name, age, height){
+        this.name = name
+        this.age = age
+        this.height = height
+        this.eating = function(){
+          console.log('eating')
+        }
       
-        p.name = name
-        p.age = age
-        p.height = height
-        p.address = address
-        p.eating = function(){
-          console.log(this.name + 'eating')
-        }
-        p.running = function(){
-          console.log(this.name + 'running')
-        }
-        return p
       }
       
-      let foo = new createPerson('kobe',18,1.98,'洛杉矶')
-      let foo1 = new createPerson('itchao',19,1.85,'成都')
-      let foo2 = new createPerson('coderwhy',20,1.88,'北京')
-      console.log(foo)
-      console.log(foo1)
-      console.log(foo2)
+      new aerson()
       
-      // 工厂模式的缺点(获取不到对象最真实的类型)
-      console.log(foo, foo1, foo2)
+      let kobe = new Person('kobe',18,1.98)
+      let james = new Person('james',19,2.03)
+      console.log(kobe, james)
       ```
 
-  * **构造函数:**
+##### 对象知识补充
 
-    * 构造函数也称为构造器(constructor),通常是我们在常见对象时会调用的函数
+* 对象的方法补充:
 
-    * 在其他面向的编程语言里面,构造函数是存在于类中的一个方法,称之为构造方法
+  * hasOwnProperty
+    * 对象是否有某一个属于自己的属性(不是在原型上的属性)
+  * in/for in 操作符
+    * 判断某个属性是否在某个对象或者对象的原型上
+  * instanceof
+    * 用于检测**构造函数的prototype**,是否出现在**某个实例对象的原型链**上
+  * isPrototypeOf
+    * 用于检测**某个对象**,是否出现在**某个实例对象的原型链**上
 
-    * 但是JavaScript中单构造函数有点不太一样
+* 对象-函数-原型的关系:
 
-    * ```javascript
-      function foo(){
-      console.log('foo____')
-      }
-      
-      // 这样调用就是一个普通的函数
-      foo()
-      
-      // 通过new调用函数就变成了构造函数,在JavaScript中任何函数都可以说普通函数也可以说构造函数
-      new foo()
-      ```
+  * ```javascript
+    let obj = {
+      name:'itchao',
+      age:18
+    }
+    
+    // 对象里面有一个__prototype__对象:隐式原型对象
+    console.log(obj.__proto__)
+    
+    // Foo是一个函数,有一个原型对象:prototype
+    // Foo.prototype来自哪里?
+    // 答案:创建了一个函数,Foo.prototype = {constructor: Foo}
+    
+    // Foo是一个对象,那么它会有一个隐式原型对象:Foo__proto__
+    // Foo.__proto__来自哪里?
+    // 答案:new Function Foo.__proto__ = Function.prototype
+    // Function.prototype = {constructor:Function}
+    
+    function Foo() {
+    
+    }
+    
+    console.log(Foo.__proto__)  // {}
+    console.log(Foo.prototype)  // {}
+    console.log(Foo.__proto__ === Foo.prototype)  // false
+    console.log(Foo.prototype.constructor)  // [Function: Foo]
+    console.log(Foo.__proto__.constructor)  // [Function: Function]
+    console.log(Function.__proto__ === Function.prototype)  // true
+    ```
 
-    * new操作符调用的作用:
+#### 原型和原型链(重要):
 
-      * 1.在内存中创建一个新的对象(空对象)
-      * 2.这个对象内部的[[prototype]]属性会被赋值为该构造函数的prototype属性
-      * 3.构造函数内部的this,会指向创建出来的新对象
-      * 4.执行函数的内部代码(函数体代码)
-      * 5.如果构造函数没有返回非空对象,则返回创建出来的新对象
-
-    * 构造函数的使用介绍:
-
-      * ```javascript
-        // 规范:构造函数的首字母一般都是大写!
-        function Person(name, age, height){
-          this.name = name
-          this.age = age
-          this.height = height
-          this.eating = function(){
-            console.log('eating')
-          }
-        
-        }
-        
-        new aerson()
-        
-        let kobe = new Person('kobe',18,1.98)
-        let james = new Person('james',19,2.03)
-        console.log(kobe, james)
-        ```
-
-##### 原型和原型链(重要):
+##### 原型理解
 
 * 对象原型的理解:
 
@@ -2417,6 +2606,8 @@ for(let i = 0;i < btns.length ; i++) {
   console.log(foo1.__proto__ == foo.prototype)
   console.log(foo2.__proto__ == foo.prototype)
   ```
+
+##### 原型应用
 
 * Person构造函数原型:
 
@@ -2513,73 +2704,73 @@ for(let i = 0;i < btns.length ; i++) {
   foo3.eat()
   ```
 
-* **原型链:**
+##### 原型链
 
-  ```javascript
-  let obj = {
-    name:'itchao',
-    age:18
-  }
-  
-  // [[get]]操作
-  // 1.在当前对象查找属性
-  // 2.如果没有找到,这个时候就会去原型(__proto__)对象上查找
-  // 3.
-  
-  
-  obj.__proto__.address = '南湖立交地铁站'
-  obj.__proto__ = {
-  
-  }
-  
-  obj.__proto__.__proto__ = {
-    game:'lol'
-  }
-  console.log(obj)
-  // 原型链
-  console.log(obj.address)
-  console.log(obj.game)
-  ```
+```javascript
+let obj = {
+  name:'itchao',
+  age:18
+}
 
-  * Object原型:
+// [[get]]操作
+// 1.在当前对象查找属性
+// 2.如果没有找到,这个时候就会去原型(__proto__)对象上查找
+// 3.
 
-    * [Object:null prototype]{},是最顶层的原型
 
-      * 从Object直接创建出来的对象的原型都是[Object:null prototype]{}
-      * 特殊一: 该对象有原型属性,但是它的原型属性已经指向的是null,已经是顶层原型了
-      * 特殊二: 该对象上有很多默认的属性和方法
+obj.__proto__.address = '南湖立交地铁站'
+obj.__proto__ = {
 
-    * 顶层原型:
+}
 
-      ```javascript
-      let obj1 = {}  // 字面量创建对象
-      let obj2 = new Object()   // 创建一个对象
-      
-      function Foo(){
-        console.log('hello itchao')
-      }
-      
-      let foo1 = new Foo()
-      
-      // 1.在内存中创建一个对象
-      // var obj ={}
-      // 2.this的赋值
-      // this = obj
-      // 3.将Foo函数的显示原型prototype赋值给前面创建出来的对象的隐式原型p.__proto__ = Foo.prototype
-      
-      let bar = {
-        name:'kobe',
-        age:18
-      }
-      
-      console.log(bar.__proto__)
-      console.log(Object.prototype)
-      console.log(bar.__proto__ === Object.prototype)
-      ```
+obj.__proto__.__proto__ = {
+  game:'lol'
+}
+console.log(obj)
+// 原型链
+console.log(obj.address)
+console.log(obj.game)
+```
 
-    * Object是所有类的父类:
+* Object原型:
 
-      * 原型链最顶层的原型对象就是Object的原型对象
+  * [Object:null prototype]{},是最顶层的原型
+
+    * 从Object直接创建出来的对象的原型都是[Object:null prototype]{}
+    * 特殊一: 该对象有原型属性,但是它的原型属性已经指向的是null,已经是顶层原型了
+    * 特殊二: 该对象上有很多默认的属性和方法
+
+  * 顶层原型:
+
+    ```javascript
+    let obj1 = {}  // 字面量创建对象
+    let obj2 = new Object()   // 创建一个对象
+    
+    function Foo(){
+      console.log('hello itchao')
+    }
+    
+    let foo1 = new Foo()
+    
+    // 1.在内存中创建一个对象
+    // var obj ={}
+    // 2.this的赋值
+    // this = obj
+    // 3.将Foo函数的显示原型prototype赋值给前面创建出来的对象的隐式原型p.__proto__ = Foo.prototype
+    
+    let bar = {
+      name:'kobe',
+      age:18
+    }
+    
+    console.log(bar.__proto__)
+    console.log(Object.prototype)
+    console.log(bar.__proto__ === Object.prototype)
+    ```
+
+  * Object是所有类的父类:
+
+    * 原型链最顶层的原型对象就是Object的原型对象
 
 * **JavaScript中的类和对象:**
 
@@ -2601,18 +2792,19 @@ for(let i = 0;i < btns.length ; i++) {
     let foo2 = new foo()
     ```
 
+#### 面向对象的特性—继承:
 
-##### 面向对象的特性--继承:
+##### 继承概念
 
 * 面向对象的三大特性:封装、继承、多态
   * 封装:将属性和方法封装到一个类中,可以称之为封装的过程
   * 继承:继承是面向对象中非常重要的,不仅仅可以减少重复代码的数量,也是多态的前提(纯面向对象中)
   * 多态:不同的对象在执行时表现出不同的形态
-  
 * 继承是做什么呢?
   * 继承可以帮助我们将重复的代码和逻辑抽取到父类中,子类只需要直接继承过来使用即可
-  
 * 父类、子类：子类可以继承自父类
+
+##### 继承实现
 
 * **原型链**的继承方案：
 
@@ -2832,7 +3024,18 @@ for(let i = 0;i < btns.length ; i++) {
   * 回顾一下之前提出的比较理想的组合继承:
 
     * 组合继承是比较理想的继承方式,但是存在两个问题
-    * 问题一:
+      * 问题一: 构造函数会被调用两次,一次在创建子类型原型对象的时候,一次在创建子类型实例的时候
+      * 问题二: 父类型中的属性会有两份:一份在原型对象中,一份在子类型实例中
+    
+  * 事实上,可以利用寄生式继承将这两个问题解决掉
+
+    * 需要明确一点:当在子类型的构造函数中调用父类型.call(this,参数)这个函数时,就会将父类型中的属性和方法复制一份到子类型中,所以父类型本身里面的内容,不再需要
+    * 这时,还需要获取一份父类型的原型对象中的属性和方法
+
+  * 能不能直接让子类型的原型对象 = 父类型的原型对象?
+
+    * 不要这么做,因为这么做意味着以后修改了子类型原型对象的某个引用类型的时候,父类型原生对象的引用类型也会被修改
+    * 使用前面的寄生式思想就可以了
 
     ```javascript
     function createObject(o) {
@@ -2882,49 +3085,3 @@ for(let i = 0;i < btns.length ; i++) {
     info.studying()
     info.running()
     ```
-
-* 对象的方法补充:
-
-  * hasOwnProperty
-    * 对象是否有某一个属于自己的属性(不是在原型上的属性)
-  * in/for in 操作符
-    * 判断某个属性是否在某个对象或者对象的原型上
-  * instanceof
-    * 用于检测**构造函数的prototype**,是否出现在**某个实例对象的原型链**上
-  * isPrototypeOf
-    * 用于检测**某个对象**,是否出现在**某个实例对象的原型链**上
-
-* 对象-函数-原型的关系:
-
-  * ```javascript
-    let obj = {
-      name:'itchao',
-      age:18
-    }
-    
-    // 对象里面有一个__prototype__对象:隐式原型对象
-    console.log(obj.__proto__)
-    
-    // Foo是一个函数,有一个原型对象:prototype
-    // Foo.prototype来自哪里?
-    // 答案:创建了一个函数,Foo.prototype = {constructor: Foo}
-    
-    // Foo是一个对象,那么它会有一个隐式原型对象:Foo__proto__
-    // Foo.__proto__来自哪里?
-    // 答案:new Function Foo.__proto__ = Function.prototype
-    // Function.prototype = {constructor:Function}
-    
-    function Foo() {
-    
-    }
-    
-    console.log(Foo.__proto__)  // {}
-    console.log(Foo.prototype)  // {}
-    console.log(Foo.__proto__ === Foo.prototype)  // false
-    console.log(Foo.prototype.constructor)  // [Function: Foo]
-    console.log(Foo.__proto__.constructor)  // [Function: Function]
-    console.log(Function.__proto__ === Function.prototype)  // true
-    ```
-
-* 
-
