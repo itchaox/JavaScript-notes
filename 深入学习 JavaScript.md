@@ -1573,9 +1573,7 @@ foo(1, 2, 23, 50 , 70)
 
 
 
-
-
-#### ES6内容(重要)
+#### ES6 (重要)
 
 ##### 1.class 关键字
 
@@ -2580,13 +2578,547 @@ for (const [key, value] of map2) {
 
 WeakMap与Map区别：
 
-* 
+* 区别一：WeakMap的Key只能使用对象，不接受其他类型作为key
+* 区别二：区别二：WeakSet对元素的引用的弱引用，如果没有其他引用对某个对象进行引用，那么GC可以对该对象进行回收
+
+注意：WeakMap不能进行遍历
+
+* 因为没有forEach方法，也不支持通过for of方式进行遍历
+
+**WeakMap 基本使用：**
+
+```javascript
+// 1. WeakMap和Map的区别一：WeakMap的key必须是对象类型
+const weakMap1 = new WeakMap();
+// weakMap1.set(1, 'w')
+console.log(weakMap1);
+// WeakMap { <items unknown> } 因为WeakMap无法遍历
+
+// 2. 区别二： WeakMap对元素的引用是弱引用
+const obj = {
+  name: 'obj'
+}
+
+const map = new Map()
+map.set(obj, 'a')
+console.log(map);
+
+const weakMap = new WeakMap()
+weakMap.set(obj, 'b')
+console.log(weakMap);
+
+// 3. WeakMap常见方法
+// get方法，获取值
+console.log(weakMap.get(obj));
+
+// has方法，判断值是否存在
+console.log(weakMap.has(obj));
+
+// delete方法，删除值
+weakMap.delete(obj);
+console.log(weakMap);
+```
+
+**WeakMap 使用场景 (Vue3 响应式原理)：**
+
+```javascript
+// WeakMap应用场景（Vue3响应式原理）
+const obj1 = {
+  name: 'itchao',
+  age: 22
+}
+
+function obj1Name1() {
+  console.log('obj1Name1');
+}
+
+function obj1Name2() {
+  console.log('obj1Name2');
+}
+
+function obj1Age1() {
+  console.log('obj1Age1');
+}
+
+function obj1Age2() {
+  console.log('obj1Age2');
+}
+
+const obj2 = {
+  height: 1.85,
+  address: '四川成都双流华阳北辰南湖香麓南一门'
+}
+
+function obj2Name1() {
+  console.log('obj2Name1');
+}
+
+function obj2Name2() {
+  console.log('obj2Name2');
+}
 
 
+// .0 创建WeakMap
+const weakMap = new WeakMap();
+// .1 收集依赖结构
+// ·1-1 对obj1收集的数据结构
+const obj1Map = new Map();
+obj1Map.set('name', [obj1Name1, obj1Name2])
+obj1Map.set('age', [obj1Age1, obj1Age2])
+weakMap.set(obj1, obj1Map);
+// .1-2 对obj2收集的数据结构
+const obj2Map = new Map();
+obj2Map.set('name', [obj2Name1, obj2Name2]);
+weakMap.set(obj2, obj2Map);
+
+// .2 如果obj1.name发生改变
+// Proxy/Object.defineProperty
+obj1.name = 'james'
+const targetMap = weakMap.get(obj1);
+const fns = targetMap.get('name')
+fns.forEach(item => item())
+```
 
 #### ES7-ES12
 
+##### 1. ES7
 
+###### 1.1 includes 方法
+
+注意:  ES7之前用 indexOf 方法返回的索引值是否等于-1判断数组中是否包含某个元素，ES7后直接使用includes判断数组是否包含某个属性
+
+作用：判断数组中是否包含某个元素
+
+indexOf 与 includes 区别：
+
+* indexOf 不能判断数组中是否包含 NaN，includes 可以判断数组中是否包含 NaN
+
+```javascript
+const names = ['itchao', 'coderwhy', 'kobe']
+
+// 以前常用判断数组是否包含某个元素 indexOf
+if (names.indexOf('itchao') !== -1) {
+  console.log('包含itchao');
+}
+
+// ES7/ES2016, 新增 includes 方法(判断数组是否包含某个元素)
+// 可传入第二个参数，用于定义判断数组的起始位置
+if (names.includes('kobe')) {
+  console.log('包含kobe');
+}
+console.log(names.includes('kobe'));
+
+// indexOf 与 includes 区别：indexOf不能判断NaN是否存在，includes能判断NaN是否存在
+const N = [NaN]
+if (N.indexOf(NaN) !== -1) {
+  console.log('indexOf NaN');
+}
+
+if (N.includes(NaN)) {
+  console.log('includes NaN');
+}
+```
+
+###### 1.2 指数运算符
+
+* ES7之前进行指数计算，需要通过Math.pow( )方法，ES7新增 ** 指数运算符
+
+````javascript
+const res1 = Math.pow(2, 4)
+
+// ES7, 新增指数运算符 **
+const res2 = 2 ** 4
+
+console.log(res1, res2);
+````
+
+##### 2. ES8
+
+###### 2.1 Object.values
+
+* 之前可以通过Object.keys( )方法，获取对象所有的 key
+* ES8新增通过Object.values( )方法，获取对象所有的 value
+
+```javascript
+const foo = {
+  name: 'itchao',
+  age: 22,
+  height: 1.85
+}
+
+// 获取对象所有key
+console.log(Object.keys(foo));
+// 获取对象所有value
+console.log(Object.values(foo));
+
+// 传入数组、字符串（用的少）
+console.log(Object.values([1, 2, 3])); // 直接打印数组本身
+console.log(Object.values('itchao')); // 将字符串拆分，然后再放入一个数组中
+```
+
+###### 2.2 Object.entries
+
+* 通过Object.entries获取一个数组，数组中存放可枚举属性的键值对数组
+
+```javascript
+const obj = {
+  name: 'itchao',
+  age: 22,
+  height: 1.85
+}
+
+console.log(Object.entries(obj));
+// [ [ 'name', 'itchao' ], [ 'age', 22 ], [ 'height', 1.85 ] ]
+
+const objEntries = Object.entries(obj);
+objEntries.forEach(item => {
+  console.log(item[0], item[1]);
+})
+
+// 传入数组、字符串
+console.log(Object.entries(['a1', 'b2', 'c3']));
+console.log(Object.entries('abc'));
+```
+
+###### 2.3 String Padding
+
+* 在字符串首部和尾部填充
+* padStart：字符串首部填充
+* padEnd：字符串尾部填充
+
+```javascript
+const message = 'itchao Good!'
+
+const NewMessage = message.padStart(15, '*').padEnd(20, '^')
+console.log(NewMessage);
+// ***itchao Good!^^^^^
+```
+
+###### 2.4  Trailing-Commas
+
+```javascript
+// 以逗号结尾
+// ES8，新增了可以在函数的参数末尾多一个逗号，函数调用时传参数也可以多一个逗号
+
+function foo(a, b,) {
+  console.log(a, b);
+}
+
+foo(1, 3,)
+```
+
+###### 2.5 Object Descriptors
+
+* Object.getOwnPropertyDescriptors
+* Async Function：async、await
+
+##### 3. ES9
+
+* Async iterators：迭代器
+* Object spread operators：对象扩展运算符
+* Promise finally：最终异步
+
+##### 4. ES10
+
+###### 4.1 flat 和 flatMap
+
+* flat( )方法，**(降维的作用)**，按照一个可指定深度递归遍历数组，并将所有元素合并再返回成一个新数组
+* flatMap( )方法，首先使用映射函数映射每个元素，然后把结果亚索成一个新数组
+  * 注意一：flatMap先进行map操作，再进行flat操作
+  * 注意二：flatMap中 flat相当于深度为1
+
+```javascript
+// 1. flat使用(数组降维)
+const arr1 = [1, 2, [3, 4], 5, 7, [2, 1, [3, 5]]]
+const newArr1 = arr1.flat(2)
+// flat(),传参为降维的维度
+console.log(newArr1);
+
+// 2. flatMap使用
+const arr2 = [1, 2, 4, 5, 3, 8]
+const newArr2 = arr2.flatMap(item => {
+  return item * 2
+})
+
+console.log(newArr2);
+
+// 3. flatMap使用场景(将数组元素为字符串组的元素，单独抽离成单个字符串)
+const message = ["itchao aa", "coderwhy bb", "kobe cc"]
+const msg = message.flatMap(item => {
+  return item.split(" ")
+})
+console.log(msg);
+```
+
+###### 4.2 Object.fromEntries
+
+* 概念：将entries格式还原成对象格式
+
+```javascript
+const obj = {
+  name: 'itchao',
+  age: 22,
+  height: 1.85
+};
+
+const objEntries = Object.entries(obj);
+console.log(objEntries);
+
+// 1. ES10, 新增Object.fromEntries, 将entries格式还原成对象格式
+const replaceObj = Object.fromEntries(objEntries)
+console.log(replaceObj);
+
+// 2. Object.fromEntries 使用场景（url中传递参数的解析成对象格式）
+const queryString = 'name=itchao&age=22&height=1.85'
+const queryParams = new URLSearchParams(queryString)
+console.log(queryParams);
+for (const item of queryParams) {
+  console.log(item);
+}
+
+const paramObj = Object.fromEntries(queryParams)
+console.log(paramObj);
+```
+
+###### 4.3 trimStart和trimEnd
+
+* trimStart：去除首部空格
+* trimEnd：去除尾部空格
+
+```javascript
+const msg = '   itchao aaa     '
+console.log(msg);
+
+// trimStart 去除首部空格
+console.log(msg.trimStart());
+// trimEnd 去除尾部空格
+console.log(msg.trimEnd());
+// trim 去除首尾空格
+console.log(msg.trim());
+```
+
+###### 4.4 ES10 其他知识点
+
+* Symbol description
+* Optional catch binding
+
+##### 5. ES11
+
+###### 5.1 BigInt
+
+* 作用：表示最大数字
+
+```javascript
+// ES11之前，表示最大数使用 max_safe_integer
+const max = Number.MAX_SAFE_INTEGER
+console.log(max); // 9007199254740991
+
+// ES11，表示最大数用 BigInt
+const bigInt = 9007199254740991000000n
+console.log(bigInt);
+console.log(bigInt + 999n);
+
+// BigInt类型与Number类型数字直接相加需要用 BigInt() 进行转换
+const num = 10002
+console.log(bigInt + BigInt(num));
+```
+
+###### 5.2 Nullish-Coalescing-operator
+
+* 控制合并运算
+
+```javascript
+// ES11, 新增空值合并运算 ？？
+// 使用空值合并运算？？，只有当值为null和undefined时，才显示默认值
+// 使用或运算符||，当值为null、undefined、0、''时，都显示默认值
+
+const foo = null
+// const bar = foo || '默认值'
+// console.log(bar);
+const it = foo ?? '空值合并运算-默认值'
+console.log(it);
+```
+
+###### 5.3 Optional Chaining
+
+* 可选链
+* 作用：让代码在进行null和undefined判断时更加清晰和简洁
+
+```javascript
+const info = {
+  name: 'itchao',
+  friend: {
+    name: 'coderwhy',
+    girlfriend: {
+      name: 'hmm'
+    }
+  }
+}
+
+console.log(info);
+
+// ES11, 新增可选链，Optional Chainling
+// 无可选链时，访问undefined.属性，会直接报错，导致后续逻辑代码无法执行
+const obj = {
+  name: 'kobe'
+}
+
+console.log(obj);
+console.log(obj.son);
+// console.log(obj.son.name)  直接运行则会报错，影响后续逻辑代码执行
+console.log(obj.son?.name)  // 使用可选链执行该代码，在执行到undefined时，直接不执行后续获取属性操作
+```
+
+###### 5.4 globalThis
+
+* 作用：获取某一环境下的全局对象（global Object）
+
+```javascript
+// 获取某一个环境下的全局对象(Global This)
+
+// ES11之前，获取全局对象，分情况讨论
+// 1. window环境下
+// console.log(this);
+// console.log(window);
+// 2. node环境下
+// console.log(global);
+
+// ES11, 新增globalThis, 获取某一环境下的全局对象
+console.log(globalThis);
+```
+
+###### 5.5 for...in 标准化
+
+* 对for...in 进行标准化，用于遍历对象的key值
+
+```javascript
+// ES11, 对 for...in 进行标准化，用于遍历对象的key值
+
+const info = {
+  name: 'itchao',
+  age: 22,
+  height: 1.85
+}
+
+for (const item in info) {
+  console.log(item);
+}
+```
+
+###### 5.6 ES11 其他知识点
+
+* Dynamic Import
+* Promise.allSettled
+* import meta
+
+##### 6. ES12
+
+###### 6.1 FinalizationRegistry
+
+* 作用：监听对象被销毁（垃圾回收）时请求一个回调
+  * FinalizationRegistry 提供方法：当一个在注册表中注册的对象被回收时，请求在某个时间点上调用一个清理回调（finalizer）
+  * 通过调用 register 方法，注册任何想要清理回调的对象，传入该对象和所含值
+
+```javascript
+// ES12, 新增 FinalizationRegistry类
+const finalRegistry = new FinalizationRegistry(value => {
+  console.log('注册在finalRegistry的对象，某一个被销毁', value);
+})
+
+let obj = {
+  name: 'itchao'
+}
+
+let info = {
+  age: 22
+}
+
+finalRegistry.register(obj, '名字')
+finalRegistry.register(info, '年龄')
+
+obj = null
+info = null
+```
+
+###### 6.2 WeakRef
+
+* 概念：使用弱引用获取对象
+* 默认将一个对象赋值给另一个对象时，则引用是强引用
+
+```javascript
+// ES12, 新增 WeakRef 类
+// WeakRef.prototype.deref
+// 1. 如果原对象未被销毁，则可以直接获取原对象
+// 2. 如果原对象已被销毁，则获取到的是undefined
+const finalRegistry = new FinalizationRegistry(value => {
+  console.log('注册在finalRegistry的对象，某一个被销毁', value);
+})
+
+let obj = {
+  name: 'itchao'
+}
+
+let info = new WeakRef(obj)
+
+finalRegistry.register(obj, '名字')
+
+obj = null
+
+// deref() 拿到弱引用的原始对象
+console.log(info.deref()?.name);  // 使用可选链 ?. , 防止在undefined中获取值时出现报错
+```
+
+###### 6.3 logical-assign-operator
+
+* 逻辑赋值运算
+
+```javascript
+// 1. ||= 逻辑或赋值运算
+// let msg = undefined;
+// msg = msg || '默认值（逻辑或赋值运算）'
+// msg ||= '默认值（逻辑或赋值运算）'
+// console.log(msg);
+
+
+// 2. &&= 逻辑与赋值运算(使用场景很少)
+// const obj = {
+//   name: 'itchao',
+//   foo: function () {
+//     console.log('foo 函数被调用');
+//   }
+// };
+// 判断前面的值是否存在，若存在则才继续判断后面的值是否存在
+// obj && obj.foo && obj.foo()
+// let info = {
+//   name: 'itchao',
+//   age: 22,
+//   height: 1.85
+// }
+
+// info = info && info.name
+// console.log(info);
+
+// info &&= info.name
+// console.log(info);
+
+
+// 3. ??= 逻辑空赋值运算
+// let a = ''
+// a = a ?? '默认值（逻辑空赋值运算）'
+// console.log(a);
+
+// a ??= '默认值（逻辑空赋值运算）'
+// console.log(a);
+```
+
+###### 6.4 ES12 其他知识点
+
+* Numeric Separator：数字分割符 _ ，例子：123_456_789
+* String.replaceAll：字符串替换
+
+
+
+<hr/>
 
 #### 严格模式
 
