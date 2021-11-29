@@ -20,7 +20,7 @@ class  Circle extends  Shape {
 
 }
 
-let r = new Rectangle()
+// let r = new Rectangle()
 let c = new Circle()
 
 
@@ -29,5 +29,5 @@ function calcArea(shape:Shape) {
     console.log(shape.getArea())
 }
 
-calcArea(r)
+// calcArea(r)
 calcArea(c)

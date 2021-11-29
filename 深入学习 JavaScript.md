@@ -2171,6 +2171,423 @@ for(let i = 0;i < btns.length ; i++) {
 }
 ```
 
+##### 8. 模板字符串
+
+作用：进行字符串拼接
+
+###### 8.1 模板字符串基本使用
+
+```javascript
+// 模板字符串基本使用
+const a = `1
+2
+3`
+const b = '123'
+
+console.log(a);
+console.log(b);
+
+ 
+const nameA = 'itchao'
+const age = 22
+const height = 1.85
+
+function Age() {
+  return age * 1.6
+}
+
+console.log(`名字 ${nameA},年龄 ${age},身高 ${height}`);
+console.log(`名字 ${nameA},年龄 ${age*1.5},身高 ${height*2}`);
+console.log(`名字 ${nameA},年龄 ${Age()},身高 ${height}`);
+ 
+```
+
+###### 8.2 标签模板字符串
+
+```javascript
+function foo(m, n) {
+  console.log(m, n, '结束打印！');
+}
+
+foo(20, 30)
+
+foo `Hello${111}World`
+```
+
+##### 9. 函数及对象默认值
+
+```javascript
+// 1.函数提供默认值
+function foo(m = 1, n = 'aaa') {
+  console.log(m, n);
+}
+
+// 调用函数时，若未传参，则可使用ES6默认参数
+foo()
+
+
+// 2.对象中参数默认值及默认值解构
+// 前面是对象解构
+// 后面是对象默认值
+function Info({name,age} = {
+  name: 'itchao',
+  age: 22
+}) {
+  console.log(name, age);
+}
+
+Info({name: 'x',age: 2})
+
+// 另外写法
+function bar({name = 'coderwhy',age = 18} = {}) {
+  console.log(name, age);
+}
+
+bar()
+
+
+// 3.有默认值形参最好放最后
+function a(x, y, z = 50) {
+  console.log(x, y, z);
+}
+
+a(10, 20)
+
+// 4. 有默认值函数，从默认值开始到最后的参数都算到length内
+function b(z, x, c = 2) {
+  console.log(z, x, c);
+}
+console.log(b.length);
+```
+
+##### 10. 函数剩余参数
+
+* 剩余参数只能放最有一个
+* 剩余参数本质就是数组，可使用数组所有方法
+
+```javascript
+function A(a, ...b) {
+  console.log(a, b);
+}
+
+A(1, 2, 3, 4, 5)
+// 1 [2, 3, 4, 5]
+```
+
+##### 11. 展开语法
+
+```javascript
+const names = ['itchao', 'coderwhy', 'kobe']
+const name = 'itchao'
+const info = {
+  name: 'itchao',
+  age: 22,
+  height: 1.85
+
+}
+
+// 剩余参数
+function foo(...args) {
+  console.log(args);
+}
+
+// 1. 函数调用时
+foo(...names)
+foo(...name)
+
+// 2. 构造数组时
+const newArray = [...names, ...name]
+console.log(newArray);
+
+// 3. 构建对象字面量时 ES2018(ES9)
+const InfoA = {...info, ...names, address: '成都市'}
+console.log(InfoA);
+
+// 补充：展开运算符进行的是浅拷贝
+```
+
+##### 12. 数值表示方式
+
+```javascript
+const num1 = 100 // 十进制
+const num2 = 0b100 // 二进制
+const num3 = 0o100 // 八进制
+const num4 = 0x100 // 十六进制
+
+console.log(num1, num2, num3, num4);
+
+// 数值特别大(ES2021, ES12)
+// 方便阅读
+const num = 100_000_000_000_000_000_000
+console.log(num);
+```
+
+##### 13. Symbol
+
+* 概念：ES6新增的一个基本数据类型，翻译为符号
+* 作用：避免出现相同属性名，造成属性名冲突
+
+###### 13.1 Symbol基本使用
+
+```javascript
+// 1. Symbol 基本使用
+const s1 = Symbol('a')
+const s2 = Symbol('b')
+
+console.log(s1 === s2);
+// ES2019(ES10)中，Symbol增加了描述（description）  
+console.log(s1.description);
+
+// 2. Symbol值作为key
+const a1 = Symbol('a1')
+const a2 = Symbol('a2')
+const a3 = Symbol('a3')
+const a4 = Symbol('a4')
+
+// 2.1 定义对象字面量
+const objA = {
+  [a1]: 'a1',
+  [a2]: 'a2'
+}
+
+console.log(objA);
+
+// 2.2 新增属性
+objA[a3] = 'a3'
+console.log(objA);
+
+// 2.3 Object.defineProperty 方式
+Object.defineProperty(objA, a4, {
+  enumerable: true, // 可枚举
+  configurable: true, // 可配置
+  writable: true, // 可重写
+  value: 'a4'
+})
+console.log(objA);
+
+// 获取Symbol语法
+console.log(objA[a1]);
+console.log(objA[a2]);
+console.log(objA[a3]);
+console.log(objA[a4]);
+
+// 2.4 使用Symbol作为对象key时,遍历/Object.keys等获取不到Symbol值
+console.log(Object.keys(objA));
+// 需要使用Object.getOwnPropertySymbols,获取Symbol值
+console.log(Object.getOwnPropertySymbols(objA));
+// Symbol遍历方式
+const sKeys = Object.getOwnPropertySymbols(objA)
+for (const sKey of sKeys) {
+  console.log(objA[sKey]);
+}
+
+// 2.5 创建相同Symbol使用Symbol.for(key)
+// 获取Symbol的key，Symbol.keyFor(Symbol值)
+const b1 = Symbol.for('b')
+const b2 = Symbol.for('b')
+console.log(b1 === b2);  // true
+
+const key = Symbol.keyFor(b1)
+console.log(key);  // b
+const b3 = Symbol.for(key)
+console.log(b3); // Symbol(b)
+console.log(b1 === b3); // true
+```
+
+##### 14. Set
+
+* ES6之前,数据结构主要有两种:数组、对象
+  * ES6新增了另外两种数据解构:Set、Map,以及它们的另外形式WeakSet、WeakMap
+* Set是新增的数据结构,可以用来保存数据,类似于数组,但是和数组的区别是**不允许重复**
+
+```javascript
+// 10 20 30 40 50
+// 1. 创建set结构
+let set = new Set()
+set.add(10)
+set.add(40)
+set.add(20)
+set.add(30)
+set.add(50)
+set.add(10)
+// 2. 添加对象时特别注意
+set.add({})  // 对象保存的内存地址不一样
+set.add({})
+
+const obj = {name:'itchao'}
+set.add(obj)  // 保存的是同一个对象的内存地址
+set.add(obj)
+
+// console.log(set)
+
+// 3. 数组去重
+const arr = [10, 12, 22, 33, 55, 12, 10 ,60]
+// const newArr = []
+// for(const item in arr) {
+//   if(newArr.indexOf(item) !== -1) {
+//     newArr.push(item)
+//   }
+// }
+
+const arrSet = new Set(arr)
+// const newArr = Array.from(arrSet)
+const newArr = [...set]
+console.log(newArr)
+
+// 4. size属性
+console.log(arrSet.size)
+
+// 5. set方法
+// add
+arrSet.add(100)
+console.log(arrSet)
+// delete
+arrSet.delete(12)
+console.log(arrSet)
+// has
+console.log(arrSet.has(100))
+// clear
+// arrSet.clear()
+console.log(arrSet)
+
+// 6. 对Set进行遍历
+arrSet.forEach(item => {
+  console.log(item)
+})
+
+for(const item of arrSet) {
+  console.log(item)
+}
+```
+
+##### 15. WeakSet
+
+概念：内部元素不能重复的数据结构
+
+WeakSet和Set区别：
+
+* 区别一：WeakSet只存放对象类型，不存放基本数据类型
+* 区别二：WeakSet对元素的引用的弱引用，如果没有其他引用对某个对象进行引用，那么GC可以对该对象进行回收
+
+```javascript
+const weakSet = new WeakSet()
+
+// 区别一：只能存放对象类型
+// weakSet.add(5)
+// console.log(weakSet);
+
+// 区别二：对与对象来说是一个弱引用
+let obj = {
+  name: 'itchao'
+}
+
+weakSet.add(obj)
+console.log(weakSet);
+```
+
+##### 16. Map
+
+概念：用于存储映射关系，以键值对形式存在
+
+对象与Map区别：
+
+* 对象只能用字符串（ES6新增Symbol）作为属性名（key）
+* Map可以用对象作为属性名
+
+```javascript
+// 1. 对象中不能用对象作为属性名key
+// const info = { name: 'itchao' }
+
+// const obj = {
+//   [info]: 'a'
+// }
+
+// console.log(obj);
+
+// 2. Map 可以用对象作为属性名key
+// 通过构造方法才创建 Map
+const obj1 = {
+  name: 'coderwhy'
+}
+const obj2 = {
+  name: 'kobe'
+}
+const map = new Map();
+map.set(obj1, 'a')
+map.set(obj2, 'b')
+map.set(1, 22)
+console.log(map);
+
+const a1 = {
+  name: 'a1'
+}
+const b1 = {
+  name: 'b1'
+}
+const c1 = {
+  name: 'c1'
+}
+const map2 = new Map([
+  [a1, 'a'],
+  [b1, 'b'],
+  [c1, 'c'],
+  [2, 'd']
+]);
+console.log(map2);
+
+// 3. 常见属性和方法
+// 属性
+console.log(map.size);
+console.log(map2.size);
+
+// 方法
+// set(key, value) 新增属性
+map2.set('chao', 'itchao')
+console.log(map2);
+
+// get(key) 获取属性
+const getMap2 = map2.get('chao')
+console.log(getMap2);
+
+// has(key) 判断属性是否存在
+const hasMap2 = map2.has('chao')
+console.log(hasMap2);
+
+// delete(key) 删除属性
+map2.delete('chao')
+console.log(map2);
+
+// clear() 清除所有属性
+// map2.clear()
+// console.log(map2);
+
+// 4. 遍历Map
+map2.forEach((item, key) => console.log(item, key));
+
+for (const item of map2) {
+  console.log(item);
+}
+
+// [key, value] 数组解构
+for (const [key, value] of map2) {
+  console.log(key, value);
+}
+```
+
+##### 17. WeakMap
+
+概念：用于存储映射关系，以键值对形式存在
+
+WeakMap与Map区别：
+
+* 
+
+
+
+#### ES7-ES12
+
+
+
 #### 严格模式
 
 * with语句(了解)
