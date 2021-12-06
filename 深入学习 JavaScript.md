@@ -2679,6 +2679,156 @@ const fns = targetMap.get('name')
 fns.forEach(item => item())
 ```
 
+##### 18. Proxy
+
+###### 18.1 Proxy 基本使用
+
+* 作用：监听对象属性
+* 例子：`const p = new Proxy(监听对象， 捕获器)`
+
+```javascript
+// Proxy 实现监听对象
+const info = {
+  sex: 'male',
+  age: 22,
+  height: 1.85
+}
+
+const p = new Proxy(info, {
+  // 获取值时的捕获器
+  get(target, key) {
+    console.log(key, '执行get操作');
+    return target[key]
+  },
+  // 设置值时的捕获器
+  set(target, key, newValue) {
+    console.log('执行set操作');
+    target[key] = newValue
+  }
+})
+
+console.log(p.sex);
+console.log(p.age);
+console.log(p.height);
+
+p.age = 18
+console.log(p.age);
+```
+
+###### 18.2 Proxy 捕获器
+
+作用：侦听具体操作
+
+1.  get 函数
+
+* target：目标对象（侦听对象）
+* property：被获取的属性 key
+* receiver：调用的代理对象
+
+2. set 函数
+
+* target：目标对象（侦听对象）
+* property：被获取的属性 key
+* newValue：新属性值
+* receiver：调用的代理对象
+
+3. has 函数
+
+* 监听 in 捕获器
+* target：目标对象（侦听对象）
+* property：被获取的属性 key
+
+4. deleteProperty 函数
+
+* 监听 delete 捕获器
+* target：目标对象（侦听对象）
+* property：被获取的属性 key
+
+5.  apply 函数
+
+* 监听 **函数** 捕获器
+* target：目标函数
+* thisArg：指向函数
+* argArray：参数
+
+6.  construct 函数
+
+* 监听 new 捕获器
+* target：目标对象
+* argArray：参数
+* newTarget：新对象
+
+**共13个捕获器，其余捕获器不常用，需要时自行查找即可**
+
+##### 19. Reflect
+
+###### 19.1 Reflect 基本使用
+
+* 概念：Reflect是ES6新增的API，是**一个对象**，字面意思**反射**
+* 作用：操作 JavaScript 对象的方法，有点像 Object 中操作对象的方法
+* 目的：替代 Object 中本来不该属于 Object 的一些方法
+* 使用场景：Reflect 经常与 Proxy 一起使用
+
+###### 19.2 Reflect 方法
+
+* Reflect 有13个方法，和Proxy一一对应
+
+###### 19.3 Receiver
+
+* 作用：改变对象中 get 和 set 的 this 指向，让 this 直接指向代理对象，不直接操作原始对象
+
+```javascript
+const obj = {
+  _name: 'itchao',
+  get name() {
+    return this._name
+  },
+  set name(newValue) {
+    this._name = newValue
+  }
+}
+
+const pObj = new Proxy(obj, {
+  get(target, key, receiver) {
+    console.log('-get-', key);
+    return Reflect.get(target, key, receiver)
+  },
+  set(target, key, newValue, receiver) {
+    console.log('-set-', key);
+    Reflect.set(target, key, newValue, receiver)
+  }
+})
+
+pObj.name = 'coderwhy'
+console.log(pObj.name);
+```
+
+###### 19.5 Reflect 中 construct
+
+* 作用：执行A构造函数内容，但是创建出来的对象是B构造函数的对象
+
+```javascript
+function Student(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+function Teacher() {
+
+}
+
+// Reflect.construct, 执行A构造函数内容，但是创建出来的对象是B构造函数的对象
+const teacher = Reflect.construct(Student, ['itchao', 22], Teacher);
+console.log(teacher);
+console.log(teacher.__proto__ === Teacher.prototype);
+```
+
+
+
+
+
+
+
 #### ES7-ES12
 
 ##### 1. ES7
@@ -3116,6 +3266,182 @@ console.log(info.deref()?.name);  // 使用可选链 ?. , 防止在undefined中�
 * Numeric Separator：数字分割符 _ ，例子：123_456_789
 * String.replaceAll：字符串替换
 
+#### 原理
+
+##### 1. 响应式原理
+
+###### 1.1 什么是响应式
+
+```javascript
+let n = 10
+
+// 响应式，实时动态改变，蝴蝶效应
+console.log(n);
+console.log(n + 1);
+console.log(n + 2);
+console.log(n ** 2);
+
+// 用的最多：对象的响应式
+const obj = {
+  name: 'itchao',
+  age: 22,
+  height: 1.85
+}
+
+console.log('--------------');
+console.log(obj.name);
+console.log(obj.age);
+console.log(obj.height);
+```
+
+###### 1.2 响应式函数封装
+
+```javascript
+// 对象的响应式，首先创建一个对象
+const obj = {
+  name: 'itchao',
+  age: 22,
+  height: 1.85
+}
+
+// 封装一个响应式函数
+let r = []
+function watchFns(fn) {
+  r.push(fn)
+}
+
+watchFns(function () {
+  console.log(obj.name, '-----');
+})
+
+function foo() {
+  console.log(obj.age, '******');
+}
+
+obj.name = 'coderwhy'
+
+r.forEach(fn => {
+  fn()
+})
+```
+
+###### 1.3 依赖收集类的封装
+
+```javascript
+// 对象的响应式，首先创建一个对象
+const obj = {
+  name: 'itchao',
+  age: 22,
+  height: 1.85
+}
+
+// 封装一个响应式函数
+class Depend {
+  constructor() {
+    this.r = []
+  }
+
+  addDepend(foo) {
+    this.r.push(foo)
+  }
+
+  notify() {
+    this.r.forEach(foo => {
+      foo()
+    })
+  }
+}
+
+const depend = new Depend()
+function watchFns(fn) {
+  depend.addDepend(fn)
+}
+
+watchFns(function () {
+  console.log(obj.name, '-----');
+})
+
+function foo() {
+  console.log(obj.age, '******');
+}
+
+obj.name = 'coderwhy'
+depend.notify()
+```
+
+###### 1.4 自动监听对象变化
+
+```javascript
+// 对象的响应式，首先创建一个对象
+const obj = {
+  name: 'itchao',
+  age: 22,
+  height: 1.85
+}
+
+// 封装一个响应式函数
+class Depend {
+  constructor() {
+    this.r = []
+  }
+
+  addDepend(foo) {
+    this.r.push(foo)
+  }
+
+  notify() {
+    this.r.forEach(foo => {
+      foo()
+    })
+  }
+}
+
+// 封装一个获取depend函数
+const targetMap = new WeakMap()
+function getDepend(target, key) {
+  // 根据target对象获取map的过程
+  let map = targetMap.get(target)
+  if (!map) {
+    map = new Map()
+    targetMap.set(target, map)
+  }
+
+  // 根据key获取depend对象
+  let depend = map.set(key)
+  if (!depend) {
+    depend = new Depend()
+    map.set(key, depend)
+  }
+}
+
+const depend = new Depend()
+function watchFns(fn) {
+  depend.addDepend(fn)
+}
+
+// 获取对象的属性变化，Proxy(Vue3),Object.defineProperty(Vue2)
+const pObj = new Proxy(obj, {
+  get(target, key, receiver) {
+    return Reflect.get(target, key, receiver)
+  },
+  set(target, key, newValue, receiver) {
+    Reflect.set(target, key, newValue, receiver)
+    const depend = getDepend(target, key)
+    depend.notify()
+  }
+})
+
+watchFns(function () {
+  console.log(pObj.name, '-----');
+})
+
+function foo() {
+  console.log(pObj.age, '******');
+}
+
+pObj.name = 'coderwhy'
+```
+
 
 
 <hr/>
@@ -3505,7 +3831,7 @@ console.log(info.deref()?.name);  // 使用可选链 ?. , 防止在undefined中�
     console.log(Function.__proto__ === Function.prototype)  // true
     ```
 
-#### 原型和原型链(重要):
+#### 原型和原型链 (重要):
 
 ##### 原型理解
 
