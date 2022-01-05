@@ -45,7 +45,7 @@ function watchFns(fn) {
   depend.addDepend(fn)
 }
 
-// 获取对象的属性变化，Proxy(Vue3),Object.defineProperty(Vue2)
+// 监听对象的属性变量，Proxy(Vue3),Object.defineProperty(Vue2)
 const pObj = new Proxy(obj, {
   get(target, key, receiver) {
     return Reflect.get(target, key, receiver)
