@@ -379,16 +379,16 @@
     * 闭包(英文:Closure),又称**词法闭包(Lexical Closure)**或**函数闭包(function Closure)**
     * 是在支持**头等函数**的编程语言中,实现词法绑定的一种技术
     * 闭包在实现上市一个结构体,它存储了一个函数和一个关联的环境(相当于一个符号查找表)
-    * 闭包和函数最大的区别在于,当捕捉闭包的时候,它的**自由变量**会在捕捉时被确定,这样即使脱离了捕捉到上下文,它也能照常运行
-  * 闭包的概念出现于60年代,最早实现闭包的程序是 Scheme,那么我们就可以理解为什么JavaScript中有闭包:
-    * 因为JavaScript中有大量的设计师来源于Scheme的
-  * MDN对JavaScript闭包的解释:
-    * 一个函数和对其周围状态(lexical environment,词法环境)的引用捆绑在一起(或者说函数被引用包围),这样的组合就是**闭包(closure)**
-    * 闭包让你可以在一个内层函数中访问到其外层函数的作用域
-    * 在JavaScript中,每当创建一个函数,闭包就会在函数创建的同时被创建出来
-  * **闭包**是由两部分组成的: **函数 + 可以访问的自由变量**(严格意义上的闭包)
-  * coderwhy老师的理解和总结:
-    * 一个普通的函数function,如果它可以访问外层作用域的自由变量,那么这个函数就是一个闭包
+    * 闭包和函数最大的区别在于,当捕捉闭包时,它的**自由变量**会在捕捉时被确定,即使脱离捕捉上下文,也能照常运行
+  * 闭包的概念出现于60年代,最早实现闭包的程序是 Scheme，可以理解为什么 JavaScript 中有闭包：
+    * 因为JavaScript中有大量的设计来源于 Scheme
+  * MDN对 JavaScript 闭包的解释:
+    * 一个函数和对其周围状态(词法环境)的引用捆绑在一起(或者说函数被引用包围)，这样的组合就是 **闭包(closure)**
+    * 闭包：可以在内层函数中访问到其外层函数作用域
+    * 在 JavaScript 中，每当创建一个函数吗，闭包就会在函数创建的同时被创建出来
+  * **闭包 **由两部分组成: **函数 + 可以访问的自由变量**(严格意义上的闭包)
+  * coderwhy 老师的理解和总结:
+    * 一个普通函数 function，如果它可以访问外层作用域的自由变量，那么这个函数就是一个闭包
     * 从广义的角度来说:JavaScript中的函数都是闭包(可以访问,但是并没有访问外层作用域变量)
     * 从狭义的角度来说:JavaScript中一个函数,如果访问了外层作用域的变量,那么它是一个闭包(已经访问外层作用域变量)
   
@@ -427,7 +427,7 @@
   * 闭包引用的自由变量销毁：
 
     ```javascript
-    // AO不适用的属性
+    // AO 不适用的属性
     // 闭包在引用外面自由变量的时候，js引擎会进行一定的优化，把没有使用到的自由变量进行销毁，便于腾出更多的空间
     function foo(){
         let name = 'itchao'
@@ -3535,11 +3535,11 @@ pObj.name = 'coderwhy'
 
 ##### 对象概念
 
-* JavaScript其实支持多重编程范式的,包括**函数式编程和面向对象编程**:
+* JavaScript 支持多重编程范式,包括**函数式编程和面向对象编程**:
 
-  * Javascript中的对象被设计成一组**属性的无序集合**,像是一个**哈希表**,由key和value组成
-  * **key是一个标识符名称,value可以说任意类型**,也可以事**其他对象或者函数类型**
-  * 如果值是**一个函数**,那么我们可以称之为是**对象的函数**
+  * Javascript 中的对象被设计成一组**属性的无序集合**,由 key 和 value 组成
+  * **key：标识符名称,value：可以是任意类型**,也可以是**其他对象或者函数类型**
+  * 如果值是**一个函数**,那这个函数可以称之为**对象的函数**
 
 ##### 创建对象的方式:
 
@@ -3571,7 +3571,7 @@ pObj.name = 'coderwhy'
 
 * Object.defineProperty()方法
 
-  * 会直接在一个对象上定义一个新属性,或者修改一个对象的现有属性,并返回此对象
+  * 直接在对象上定义一个新属性,或者修改一个对象的现有属性,并返回此对象
 
   * ```javascript
     Object.defineProperty(obj, prop, descriptor)
@@ -3581,7 +3581,7 @@ pObj.name = 'coderwhy'
 
     * obj:要定义属性的对象
     * prop:要定义或者修改的属性的名称或者Symbol
-    * descriptor:要定义或修改的属性描述符)(属性描述符是一个对象)
+    * descriptor:要定义或修改的属性描述符 (属性描述符是一个对象)
 
   * 返回值:
 
@@ -3604,17 +3604,17 @@ pObj.name = 'coderwhy'
 
 * 数据属性描述符:(有如下四个特性)
 
-  * [[Configurable]]:表示属性是否可以通过delete删除属性,是否可以修改它的特性,或是否可以将它修改为存取属性描述符
-    * 当我们直接在一个对象上定义某个属性时,这个属性的[[Configurable]]默认为**true**
-    * 当我们通过属性描述符定义一个属性时,这个属性的[[Configurable]]默认为**false**
-  * [[Enumerable]]:表示属性是否可以通过for-in或者Object.keys()返回该属性
-    * 当我们直接在一个对象上定义某个属性时,这个属性的[[Enumerable]]默认为**true**
-    * 当我们通过属性描述符定义一个属性时,这个属性的[[Enumerable]]默认为**false**
-  * [[Writable]]:表示是否可以修改属性的值
-    * 当我们直接在一个对象上定义某个属性时,这个属性的[[Writable]]默认为**true**
-    * 当我们通过属性描述符定义一个属性时,这个属性的[[Writable]]默认为**false**
-  * [[value]]:属性的value值,读取属性时会返回该值,修改属性时,会对其进行修改
-    * 默认情况下这个值是**undefined**
+  * Configurable（可配置）：属性是否通过 delete 删除、是否修改它的特性，是否将它修改为存取属性描述符
+    * 直接在一个对象上定义某个属性时，Configurable 默认为 **true**
+    * 通过属性描述符定义一个属性时，Configurable 默认为 **false**
+  * Enumerable（可枚举）：属性是否可以通过 for-in 或者 Object.keys() 返回该属性
+    * 直接在一个对象上定义某个属性时，Enumerable 默认为 **true**
+    * 通过属性描述符定义一个属性时，Enumerable 默认为 **false**
+  * Writable（可书写）：是否可以修改属性值
+    * 直接在一个对象上定义某个属性时，Writable 默认为 **true**
+    * 通过属性描述符定义一个属性时，Writable 默认为 **false**
+  * value（属性值）：读取属性时，返回该值；修改属性时，修改该值
+    * 默认情况下这个值是 **undefined**
 
 * 存储属性描述符:
 
@@ -3622,8 +3622,8 @@ pObj.name = 'coderwhy'
   * 如果我们希望截获一个属性它访问和设置值得过程时,也会使用存储属性描述符
 
 * 定义多个属性描述符:
-  * 私有属性:JS里面没有严格意义上的私有属性,但是用 _ 开头的都默认是私有属性或者私有方法
-  * Object.defineProperties( )方法,可以定义多个对象
+  * 私有属性：JS 没有严格意义上的私有属性，但用 _ 开头都默认是私有属性或者私有方法
+  * Object.defineProperties( )：定义多个对象
 
 * 对象的方法:
 
@@ -3638,16 +3638,15 @@ pObj.name = 'coderwhy'
   obj.city = '北京市'
   obj.city = '上海市'
   
-  // 禁止对象继续添加新的属性
+  // Object.preventExtensions( ): 阻止对象添加新属性
   Object.preventExtensions(obj)
   
-  // delete 可以删除对象内的元素
+  // delete:删除对象内元素
   delete  obj.age
   console.log(obj)
-  // freeze()方法让属性不可以修改(writable:false)
+  // freeze(): 阻止对象更新属性值(writable:false)
   Object.freeze(obj)
   obj.name = 'itchao'
-  
   console.log(obj.name)
   ```
 
@@ -3658,44 +3657,36 @@ pObj.name = 'coderwhy'
 
   * 工厂模式是一种常见的设计模式
 
-  * 通常我们会有一个工厂方法,通过该工厂方法我们可以产生想要的对象
+  * 通过工厂方法可以产生想要的对象
 
   * ```javascript
     // 工厂模式:工厂函数
-    function createPerson(name, age, height, address){
+    function createPerson(name, age){
       let p = {}
-    
       p.name = name
       p.age = age
-      p.height = height
-      p.address = address
       p.eating = function(){
         console.log(this.name + 'eating')
-      }
-      p.running = function(){
-        console.log(this.name + 'running')
       }
       return p
     }
     
-    let foo = new createPerson('kobe',18,1.98,'洛杉矶')
-    let foo1 = new createPerson('itchao',19,1.85,'成都')
-    let foo2 = new createPerson('coderwhy',20,1.88,'北京')
-    console.log(foo)
+    let foo1 = new createPerson('itchao',19)
+    let foo2 = new createPerson('coderwhy',20)
     console.log(foo1)
     console.log(foo2)
     
-    // 工厂模式的缺点(获取不到对象最真实的类型)
-    console.log(foo, foo1, foo2)
+    // 工厂模式的缺点(获取不到对象最真实类型)
+    console.log(foo1, foo2)
     ```
-
+  
 * **构造函数:**
 
-  * 构造函数也称为构造器(constructor),通常是我们在常见对象时会调用的函数
+  * 构造函数也称为构造器(constructor)，通常在常见对象时会调用的函数
 
-  * 在其他面向的编程语言里面,构造函数是存在于类中的一个方法,称之为构造方法
+  * 其他面向对象编程语言里，构造函数存在于类中的一个方法，称为构造方法
 
-  * 但是JavaScript中单构造函数有点不太一样
+  * 但是 JavaScript 中构造函数不一样
 
   * ```javascript
     function foo(){
@@ -3705,22 +3696,23 @@ pObj.name = 'coderwhy'
     // 这样调用就是一个普通的函数
     foo()
     
-    // 通过new调用函数就变成了构造函数,在JavaScript中任何函数都可以说普通函数也可以说构造函数
+    // 通过new调用函数就变成了构造函数
+    // 在 JavaScript 中任何函数都是普通函数，也可以是构造函数
     new foo()
     ```
-
+    
   * new操作符调用的作用:
 
-    * 1.在内存中创建一个新的对象(空对象)
-    * 2.这个对象内部的[[prototype]]属性会被赋值为该构造函数的prototype属性
-    * 3.构造函数内部的this,会指向创建出来的新对象
-    * 4.执行函数的内部代码(函数体代码)
-    * 5.如果构造函数没有返回非空对象,则返回创建出来的新对象
+    1. 在内存中创建一个新的空对象
+    2. 这个对象内部的[[prototype]]属性会被赋值为该构造函数的prototype属性
+    3. 构造函数内部 this 指向：创建出来的新对象
+    4. 执行函数的内部代码(函数体代码)
+    5. 如果构造函数没有返回非空对象,则返回创建出来的新对象
 
   * 构造函数的使用介绍:
 
     * ```javascript
-      // 规范:构造函数的首字母一般都是大写!
+      // 规范：构造函数的首字母一般都是大写
       function Person(name, age, height){
         this.name = name
         this.age = age
@@ -3728,10 +3720,7 @@ pObj.name = 'coderwhy'
         this.eating = function(){
           console.log('eating')
         }
-      
       }
-      
-      new aerson()
       
       let kobe = new Person('kobe',18,1.98)
       let james = new Person('james',19,2.03)
@@ -3740,18 +3729,18 @@ pObj.name = 'coderwhy'
 
 ##### 对象知识补充
 
-* 对象的方法补充:
+* 对象方法的补充:
 
   * hasOwnProperty
-    * 对象是否有某一个属于自己的属性(不是在原型上的属性)
+    * 验证某个属性是否存在于：对象（只判断对象本身，不判断对象原型）
   * in/for in 操作符
-    * 判断某个属性是否在某个对象或者对象的原型上
+    * 验证某个属性是否存在于：对象或对象原型
   * instanceof
-    * 用于检测**构造函数的prototype**,是否出现在**某个实例对象的原型链**上
+    * 用于检测**构造函数的 prototype**，是否出现在**某个实例对象的原型链**上
   * isPrototypeOf
-    * 用于检测**某个对象**,是否出现在**某个实例对象的原型链**上
+    * 用于检测**某个对象**，是否出现在**某个实例对象的原型链**上
 
-* 对象-函数-原型的关系:
+* 对象 — 函数 — 原型的关系:（对象的隐式原型 === 构造函数的显示原型）
 
   * ```javascript
     let obj = {
@@ -3759,16 +3748,16 @@ pObj.name = 'coderwhy'
       age:18
     }
     
-    // 对象里面有一个__prototype__对象:隐式原型对象
+    // 对象有隐式原型：__proto__
     console.log(obj.__proto__)
     
-    // Foo是一个函数,有一个原型对象:prototype
+    // Foo 是函数时有显示原型：prototype
     // Foo.prototype来自哪里?
-    // 答案:创建了一个函数,Foo.prototype = {constructor: Foo}
+    // 答案:创建了一个函数，Foo.prototype = {constructor: Foo}
     
-    // Foo是一个对象,那么它会有一个隐式原型对象:Foo__proto__
+    // Foo 是对象时,它有隐式原型：Foo__proto__
     // Foo.__proto__来自哪里?
-    // 答案:new Function Foo.__proto__ = Function.prototype
+    // 答案:new Function，Foo.__proto__ = Function.prototype
     // Function.prototype = {constructor:Function}
     
     function Foo() {
@@ -3843,11 +3832,9 @@ pObj.name = 'coderwhy'
   }
   
   let p1 = new Person()
-  let p2 = new Person()
   
-  // 对象的隐式原型__proto__等于构造函数的显示原型prototype
+  // 对象隐式原型__proto__ === 构造函数显示原型prototype
   console.log(p1.__proto__ === Person.prototype)
-  console.log(p2.__proto__ === Person.prototype)
   
   // 例子:如果要打印一个对象的name属性,假如该对象没有age属性,那么会沿着原型链去向上查找,看原型链上是否有name属性
   
@@ -3859,11 +3846,11 @@ pObj.name = 'coderwhy'
   Person.prototype.name = 'james'
   console.log(p1.name)  // 输出结果:james
   ```
-
+  
 * 函数原型上的属性:
 
   ```javascript
-  function  foo(){
+  function foo(){
       
   }
   // console.log(foo.prototype)
@@ -3898,7 +3885,7 @@ pObj.name = 'coderwhy'
   let foo2 = new foo()
   console.log(foo2.height)
   
-  // 真实开发中我们可以通过Object.defineProperty方式添加constructor
+  // 真实开发中可以通过Object.defineProperty方式添加constructor
   Object.defineProperty(foo.prototype, 'constructor',{
     enumerable:false,
     configurable:true,
@@ -3919,15 +3906,9 @@ pObj.name = 'coderwhy'
     }
   }
   
-  let foo1 = new foo('kobe',18,1.98)
-  let foo2 = new foo('coderwhy',19,1.88)
-  let foo3 = new foo('itchao',20,1.85)
+  let foo1 = new foo('itchao',20,1.85)
   console.log(foo1)
-  console.log(foo2)
-  console.log(foo3)
   foo1.eat()
-  foo2.eat()
-  foo3.eat()
   ```
 
 ##### 原型链
@@ -3941,8 +3922,6 @@ let obj = {
 // [[get]]操作
 // 1.在当前对象查找属性
 // 2.如果没有找到,这个时候就会去原型(__proto__)对象上查找
-// 3.
-
 
 obj.__proto__.address = '南湖立交地铁站'
 obj.__proto__ = {
@@ -3960,9 +3939,9 @@ console.log(obj.game)
 
 * Object原型:
 
-  * [Object:null prototype]{},是最顶层的原型
+  * [Object:null prototype] { },是最顶层的原型
 
-    * 从Object直接创建出来的对象的原型都是[Object:null prototype]{}
+    * 从Object 直接创建出来的对象的原型都是[Object:null prototype] { }
     * 特殊一: 该对象有原型属性,但是它的原型属性已经指向的是null,已经是顶层原型了
     * 特殊二: 该对象上有很多默认的属性和方法
 
@@ -3994,19 +3973,17 @@ console.log(obj.game)
     console.log(bar.__proto__ === Object.prototype)
     ```
 
-  * Object是所有类的父类:
+  * Object 是所有类的父类:
 
-    * 原型链最顶层的原型对象就是Object的原型对象
+    * 原型链最顶层的原型对象：Object 原型对象
 
 * **JavaScript中的类和对象:**
 
-  * 当我们编写如下代码时,怎么称呼这个Person呢?
+  * 在 JS 中 Person，被称为构造函数
 
-  * 在JS中Person应该被称之为是一个构造函数
+  * 面向对象语言中,也习惯称之为类,因为类可以创建出对象p1、p2
 
-  * 从很多面向对象语言过来的开发者,也习惯称之为类,因为类可以帮助我们创建出来对象p1、p2
-
-  * 如果从面向对象的编程范式角度来看,Person确实是可以称之为类
+  * 面向对象的编程范式角度看, Person 可以称之为类
 
     ```javascript
     //例子
