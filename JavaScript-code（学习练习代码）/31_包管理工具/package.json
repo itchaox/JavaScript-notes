@@ -1,0 +1,17 @@
+{
+  "name": "node_package",
+  "version": "1.0.0",
+  "description": "初始化包管理工具",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "wangchao",
+  "license": "ISC",
+  "dependencies": {
+    "vue": "^3.2.31"
+  },
+  "devDependencies": {
+    "webpack": "^3.6.0"
+  }
+}
