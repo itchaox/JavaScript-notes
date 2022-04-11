@@ -1,9 +1,4 @@
-// TODO: 1. await + 表达式
-// 伪代码:
-// async function foo() {
-//   await 表达式(promise) //TODO: 等待该部分代码执行完成，有结果之后，才执行后续代码！
-// console.log('后续代码!'); //TODO: 该部分代码，相当于在上面 promise 代码的 then 方法中执行！
-// }
+// TODO: 1. await + 表达式(Promise)
 
 // function getData(time) {
 //   return new Promise((resolve, reject) => {
@@ -14,12 +9,8 @@
 // }
 
 // async function foo() {
-//   const res1 =  await getData(1000) // await 有返回值
-//   console.log('第一个异步函数!', res1);
-
-//   const res2 = await getData(2000)
-//   console.log('第二个异步函数!', res2);
-  
+//   const res1 =  await getData(1000) // await 有返回值 //TODO: 等待该部分代码执行完成，有结果之后，才执行后续代码！
+//   console.log('第一个异步函数!', res1); //TODO: 该部分代码，相当于在上面 promise 代码的 then 方法中执行！
 // }
 
 // foo()

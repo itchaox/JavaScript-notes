@@ -1,4 +1,4 @@
-// 1. 不同函数
+// 1. 普通函数
 async function foo() {
 
 }

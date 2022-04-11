@@ -1943,7 +1943,7 @@ console.log(obj)
   console.log(x1, x2, x3, x4)
   ```
 
-* 对象结构
+* 对象解构
 
   ```javascript
   // 对象解构
@@ -2073,7 +2073,7 @@ function  foo() {
 {
   var foo = 'itchao'
   let name = 'kobe' // let声明外界无法访问
-  function bar(){}  // 函数声明外界无法访问(大部分浏览器有不同实现的[大部分浏览器为了兼容以前的代码,让function是没哟块级作用域])
+  function bar(){}  // 函数声明外界无法访问(大部分浏览器有不同实现的[大部分浏览器为了兼容以前的代码,让function是没有块级作用域])
   class Person{ }  //  class声明外界无法访问
 }
 
@@ -2152,7 +2152,6 @@ function Age() {
 console.log(`名字 ${nameA},年龄 ${age},身高 ${height}`);
 console.log(`名字 ${nameA},年龄 ${age*1.5},身高 ${height*2}`);
 console.log(`名字 ${nameA},年龄 ${Age()},身高 ${height}`);
- 
 ```
 
 ###### 8.2 标签模板字符串
@@ -2215,7 +2214,7 @@ console.log(b.length);
 
 ##### 10. 函数剩余参数
 
-* 剩余参数只能放最有一个
+* 剩余参数只能放最后一个
 * 剩余参数本质就是数组，可使用数组所有方法
 
 ```javascript
@@ -4326,6 +4325,77 @@ console.log(obj.game)
   6. 清空数据：localStorage.clear( )
 
 #### async_await
+
+##### 1. async 异步函数写法
+
+* 普通函数：
+
+  ```javascript
+  async function foo() {
+  }
+  ```
+
+* 箭头函数：
+
+  ```javascript
+  const foo = async () => {
+  }
+  ```
+
+* class 类里面的函数：
+
+  ```javascript
+  class Person {
+    async foo() {
+    }
+  }
+  ```
+
+##### 2. 异步函数执行流程
+
+```javascript
+//  只写 async 时,该函数与普通函数的执行流程是一样的（单线程执行）
+ async function foo() {
+  console.log(1);
+  console.log(2);
+  console.log(3);
+}
+
+console.log('start');
+foo()
+console.log('end');
+```
+
+##### 3. async 函数与普通函数区别
+
+* 区别一：返回值
+
+  * 异步函数的返回值一定是一个 promise
+  * 返回值类型：
+    1. 普通值
+    2. 返回 thenable
+    3. 返回 Promise
+
+* 区别二：异常
+
+  * 异步函数中的异常,会被作为异步函数返回的 promise 的 reject 值，而且需要用 catch 方法接收错误信息
+
+    ```javascript
+    async function foo() {
+      console.log('start');
+    
+      throw new Error('err')
+      console.log('end');
+    }
+    
+    foo().catch( err => console.log('错误信息:', err))
+    
+    console.log('后续代码!');
+    ```
+
+* 区别三：await
+
+  * 
 
  #### 进程与线程
 

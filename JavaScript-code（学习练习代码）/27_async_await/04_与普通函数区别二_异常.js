@@ -3,7 +3,7 @@
 async function foo() {
   console.log('start');
 
-  throw new Error('err111')
+  throw new Error('err')
   console.log('end');
 }
 
