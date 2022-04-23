@@ -1,3 +1,3 @@
-localStorage.setItem('str', 'itchao')
+localStorage.setItem("str", "itchao");
 
-sessionStorage.setItem('str', 'itchao')
+sessionStorage.setItem("str", "itchao");

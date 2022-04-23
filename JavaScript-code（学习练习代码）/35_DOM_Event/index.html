@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>事件冒泡与事件监听</title>
+  <style>
+    .bubbling {
+      width: 200px;
+      height: 200px;
+      background-color: purple;
+    }
+
+    .in {
+      width: 100px;
+      height: 100px;
+      background-color: firebrick;
+    }
+  </style>
+  >
+</head>
+
+<body>
+  <div class="bubbling">
+    <span>事件冒泡/捕获</span>
+    外层
+    <div class="in">内层</div>
+    <a href="http://www.baidu.com">百度</a>
+  </div>
+  <script>
+    const inElement = document.querySelector(".in");
+    inElement.addEventListener("click", () => {
+      event.stopPropagation() // 阻止事件冒泡、捕获
+      console.log("内层元素被点击");
+    });
+    const outBubbling = document.querySelector("div");
+    outBubbling.addEventListener("click", (event) => {
+      console.log("外层元素被点击");
+    });
+  </script>
+</body>
+
+</html>
