@@ -5,7 +5,7 @@
 * V8引擎
   1. 代码被解析,v8引擎内部会创建一个对象(GlobalObject -> go)
   2. 运行代码
-     * v8为了执行代码,v8yinqi八引擎内部会有一个执行上下文栈(Execution Context Stack,ECStack)(函数调用栈)
+     * v8为了执行代码,v8引擎内部会有一个执行上下文栈(Execution Context Stack,ECStack)(函数调用栈)
      * 执行全局代码时,为了全局代码能够正常的执行,需要创建全局执行上下文(Global Execution Context)(全局代码需要被执行时才会创建 )
 
 ---
@@ -3567,6 +3567,7 @@ pObj.name = 'coderwhy'
       }
     }
     itchao.eat()
+    ```
 
 * Object.defineProperty()方法
 
@@ -4501,3 +4502,111 @@ console.log('end');
   3. 常见方法：
      * 阻止默认事件：   event.preventDefault( )
      * 阻止冒泡/捕获事件：   event.stopPropagation( )
+
+#### 异常处理
+
+##### 1. 函数出现错误处理
+
+```javascript
+function sum(num1, num2) {
+  if (typeof num1 !== "number" || typeof num2 !== "number") {
+    throw "参数类型不正确"; // 1.主动抛出异常，提示使用者解决异常，并且停止后续代码执行
+    // return '参数类型不正确' // 2. return 提示使用者异常，但后续代码会继续执行
+  }
+  return num1 + num2;
+}
+
+console.log(sum("a", "2"));
+```
+
+##### 2. 抛出异常其他补充
+
+```javascript
+// 创建异常类
+class WCError {
+  constructor(err, msg) {
+    this.err = err;
+    this.msg = msg;
+  }
+}
+
+function foo(type) {
+  console.log("开始执行!");
+
+  if (type === 0) {
+    // throw "类型不能为 0"; // 1. 抛出基本数据类型（String，Number， Boolean）
+    // throw { ErrorCode: -1, ErrorMessage: "类型不能为 0" }; // 2. 常见用法：抛出对象
+    // throw new WCError(-1, "类型不能为 0"); // 3. 定义一个类，然后使用类抛出异常
+    // throw new Error("类型不能为 0");
+    // 4. 使用JavaScript 内置定义好的 Error 错误抛出类
+    /**
+     *  4.1 Error 包含三个属性
+     *   01_ message： 创建 Error 对象时传入的 message
+     *   02_ name：Error 的名称，通常和类名一致
+     *   03_ stack：整个 Error 错误信息，包括函数调用栈，直接打印 Error 对象时，打印的就是 stack
+     *  4.2 Error 子类
+     *   01_ RangeError：下标值越界的错误类型
+     *   02_ SyntaxError：解析语法的错误类型
+     *   03_ TypeError：类型错误的错误类型
+     */
+    throw new TypeError("类型错误:不能为 0!"); // 5. TypeError（类型错误） 为 Error 子类
+
+    //TODO: throw 抛出错误后，后续代码不再执行
+  }
+
+  console.log("结束执行");
+}
+
+foo(0);
+
+//TODO: 函数调用栈：函数调用的顺序
+// 例子(a3 -> a2 -> a1)
+
+function a3() {
+  console.log("打印a3函数信息!");
+}
+
+function a2() {
+  a3();
+}
+
+function a1() {
+  a2();
+}
+```
+
+##### 3. 抛出异常处理
+
+```javascript
+function foo() {
+  throw new Error("主动抛出异常!");
+}
+
+// 两种处理方式:
+// 方法一：不处理，则异常会进一步抛出，直到最顶层调用
+//  如果最顶层也未对异常进行处理，则程序会终止执行，并且报错
+
+// function test() {
+//   foo();
+// }
+
+// 方法二: 使用 try catch 主动捕获异常，然后对错误进行处理
+function test() {
+  try {
+    foo();
+  } catch (err) {
+    console.log("错误信息:", err.message);
+  } finally {
+    console.log("finally 处理事件!");
+  }
+}
+
+function demo() {
+  test();
+}
+
+demo();
+```
+
+
+
