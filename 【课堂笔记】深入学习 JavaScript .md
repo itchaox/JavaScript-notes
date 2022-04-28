@@ -4608,5 +4608,93 @@ function demo() {
 demo();
 ```
 
+#### 模块化
 
+* 概念：将程序分成一个个小的结构，每个小结构就是模块
+* 特征：
+  1. 每个结构编写自己的逻辑代码，有自己的独立作用域，不影响其他结构
+  2. 每个结构可以导出变量、函数、对象 等给其他结构使用
+  3. 每个结构可以从其他结构中导入变量、函数、对象等
+* 不同规范化：AMD、CMD、CommonJS、ESModule
+* 没有模块化导致的问题：
+  1. 多个 js 文件没有自己作用域，可能存在变量名冲突
+  2. 可以使用立即执行函数表达式解决变量没有作用域的问题，但是又会存在让代码混乱、各个公司规范不一致等问题
 
+##### 4.1 CommonJS
+
+* 概念：CommonJS 是一种规范
+* CommonJS 与 Node 的关系：
+  1. Node 是对 CommonJS 的规范进行支持和实现，让开发 node 过程中更加方便的进行模块化开发
+  2. Node 中每个 js 文件就是一个单独的模块
+  3. 这个单独的模块包括 CommonJS 规范的核心变量：exports、module.exports、require
+*  exports、module.exports：对模块内容进行导出
+* require：导入其他模块（自定义模块、系统模块、第三方模块）
+
+###### 4.1.1 导出
+
+1. module.exports：（用的最多的一种方式）
+
+   * 使用方式：
+
+     * 直接导出属性
+
+       ```javascript
+       const name = itchao
+       module.exports.name = name
+       ```
+
+     * 导出对象
+
+       ```javascript
+       const name = itchao
+       const age = 18
+       const height = 1.88
+       
+       module.exports = {
+         name,
+         age,
+         height
+       }
+       ```
+
+2. exports：（exports 是符合 CommonJS 规范，但是 node 社区逐渐抛弃这种用法）
+
+   * 使用方式：
+
+     ```javascript
+     exports.name = name
+     exports.age = age
+     exports.height = height
+     ```
+
+   * 源码分析：
+
+     ```javascript
+     // 将 module.exports 对象地址赋值给 exports，因为他们两个是同一个对象
+     module.exports = {}
+     exports = module.exports
+     
+     // 结论：导出对象始终是 module.exports 对象
+     ```
+
+###### 4.1.2 导入
+
+1. require：
+
+   * 使用方式:
+
+     ```javascript
+     const obj = require('./wc.js')
+     ```
+
+   * 分析：
+
+     1. require 传的参数是一个路径
+     2. require 返回值是一个对象，即导出文件导出的对象
+
+###### 4.1.3 CommonJS 内部原理
+
+1. 对象保存的是内存地址
+2. `module.exports` 导出的是一个对象，这个对象拥有自己的内存地址
+3. `require` 导入的返回值是一个对象，这个对象就是导出时的对象
+4. 导出和导入的是同一个对象，拥有同样的内存地址
