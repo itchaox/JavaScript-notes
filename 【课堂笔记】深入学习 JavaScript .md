@@ -4620,7 +4620,7 @@ demo();
   1. 多个 js 文件没有自己作用域，可能存在变量名冲突
   2. 可以使用立即执行函数表达式解决变量没有作用域的问题，但是又会存在让代码混乱、各个公司规范不一致等问题
 
-##### 4.1 CommonJS
+##### 4.1 CommonJS 规范
 
 * 概念：CommonJS 是一种规范
 * CommonJS 与 Node 的关系：
@@ -4744,4 +4744,16 @@ demo();
   * 但是目前一方面现代浏览器已经支持 ES Modules
   * 另一方面借助于 webpack 等工具可以实现对 CommonJS 或者 ES Module 代码的转换
   * 现在 AMD 和 CMD 已经使用的非常少了
+
+##### 4.2 AMD 规范
+
+* 概念：主要应用于浏览器的一种模块化规范
+* AMD：Asynchronous Module Definition（异步模块定义）的缩写
+* 采用异步加载模块
+
+##### 4.3 CMD 规范
+
+* 概念：主要应用于浏览器的一种模块化规范
+* CMD：Common Module Definition（通用模块定义）的缩写
+* 采用异步加载模块
 
