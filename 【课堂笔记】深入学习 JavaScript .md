@@ -4730,7 +4730,7 @@ demo();
   * 形成一种数据结构：图结构
   * Node 中采用图结构遍历的深度优先搜索算法
 
-###### 4.1.6 CommonJS 规范缺点
+###### 4.1.5 CommonJS 规范缺点
 
 * CommonJS 加载模块是同步的：
   * 同步意味着只有等到对应模块加载完毕，当前模块中的内容才能被运行
@@ -4762,153 +4762,163 @@ demo();
 * 概念：
   1. export 负责将模块内容导出
   2. import 负责从其他模块导入内容
-  3. 采用 ES Module 将自动开启严格模式：use strict（了解）
-
-* 导出：
-
-  1. export + 声明语句：
-
-     ```javascript
-     export const name = 'itchao'
-     export const age = 18
-     export const height = 1.88
-     ```
-
-  2. export 导出和声明语句分开：
-
-     ```javascript
-     const name = 'itchao'
-     const age = 18
-     const height = 1.88
-     
-     export {
-       name,
-       age,
-       height
-     }
-     ```
-
-  3. export 导出和声明语句分开（导出时起别名）：
-
-     ```javascript
-     const name = 'itchao'
-     const age = 18
-     const height = 1.88
-     
-     export {
-       name as fName,
-       age as fAge,
-       height as fHeight
-     }
-     ```
-
-  4. 默认导出：(默认导出只有一个)
-
-     ```javascript
-     // 方式一：
-     const name = 'itchao'
-     const age = 18
-     const height = 1.88
-     
-     export {
-       name,
-       age,
-       height as default
-     }
-     
-     // 方式二:
-     const name = 'itchao'
-     const age = 18
-     const height = 1.88
-     
-     export default name
-     ```
-
-* 导入：
-
-  1. 普通导入：
-
-     ```javascript
-     import { name , age, height } from './foo.js'
-     ```
-
-  2. 普通导入（导入时起别名）：
-
-     ```javascript
-     import { name as fName, age as fAge, height as fHeight } from './foo.js'
-     ```
-
-  3. 将导出所有内容放到一个标识符中：
-
-     ```javascript
-     import * as importObj from './foo.js'
-     ```
-
-  4. 默认导入：
-
-     ```javascript
-     import foo from './foo.js'
-     ```
-
-     
-
-* 导入和导出结合使用：（封装 utils 工具文件夹时，最好在里面创建一个 index.js 出口文件进行整合）
-
-  1. 先导入再导出：
-
-     ```javascript
-     import { add, sub } from './math.js'
-     import { timeFormat, priceFormat } from './format.js'
-     
-     export {
-       add,
-       sub,
-       timeFormat,
-       priceFormat
-     }
-     ```
-
-  2. 导入时直接导出：
-
-     ```javascript
-     export { add, sub } from './math.js'
-     export { timeFormat, priceFormat } from './format.js'
-     ```
-
-  3. 导入时直接全量导出：
-
-     ```javascript
-     export * from './math.js'
-     export * from './format.js'
-     ```
-
-* import 函数：
-
-  * 注意：（导入为同步执行代码，需要执行成功之后，才执行后续代码，因此可能存在阻塞问题！）
-
-    ````javascript
-    import foo from './foo.js'
-    ````
-
-  * import( ):
-
-    * 返回值是一个 Promise
-
-    * 示例：
-
-      ```javascript
-      import('./foo.js').then(res => {
-          console.log('res: ', res)
-      })
-      ```
-
-      
+  3. 采用编译期静态分析，并且加入了动态引入的方式
+4. 采用 ES Module 将自动开启严格模式：use strict（了解）
 
 
+###### 4.4.1 导出
 
+1. export + 声明语句：
 
+   ```javascript
+   export const name = 'itchao'
+   export const age = 18
+   export const height = 1.88
+   ```
 
+2. export 导出和声明语句分开：
 
+   ```javascript
+   const name = 'itchao'
+   const age = 18
+   const height = 1.88
+   
+   export {
+     name,
+     age,
+     height
+   }
+   ```
+
+3. export 导出和声明语句分开（导出时起别名）：
+
+   ```javascript
+   const name = 'itchao'
+   const age = 18
+   const height = 1.88
+   
+   export {
+     name as fName,
+     age as fAge,
+     height as fHeight
+   }
+   ```
+
+4. 默认导出：(默认导出只有一个)
+
+   ```javascript
+   // 方式一：
+   const name = 'itchao'
+   const age = 18
+   const height = 1.88
+   
+   export {
+     name,
+     age,
+     height as default
+   }
+   
+   // 方式二:
+   const name = 'itchao'
+   const age = 18
+   const height = 1.88
+   
+   export default name
+   ```
+
+###### 4.4.2 导入
+
+1. 普通导入：
+
+   ```javascript
+   import { name , age, height } from './foo.js'
+   ```
+
+2. 普通导入（导入时起别名）：
+
+   ```javascript
+   import { name as fName, age as fAge, height as fHeight } from './foo.js'
+   ```
+
+3. 将导出所有内容放到一个标识符中：
+
+   ```javascript
+   import * as importObj from './foo.js'
+   ```
+
+4. 默认导入：
+
+   ```javascript
+   import foo from './foo.js'
+   ```
+
+   
+
+###### 4.4.3 导入和导出结合使用
+
+* （封装 utils 工具文件夹时，最好在里面创建一个 index.js 出口文件进行整合）
+
+1. 先导入再导出：
+
+   ```javascript
+   import { add, sub } from './math.js'
+   import { timeFormat, priceFormat } from './format.js'
+   
+   export {
+     add,
+     sub,
+     timeFormat,
+     priceFormat
+   }
+   ```
+
+2. 导入时直接导出：
+
+   ```javascript
+   export { add, sub } from './math.js'
+   export { timeFormat, priceFormat } from './format.js'
+   ```
+
+3. 导入时直接全量导出：
+
+   ```javascript
+   export * from './math.js'
+   export * from './format.js'
+   ```
+
+###### 4.4.4  import 函数
+
+* 注意：（导入为同步执行代码，需要执行成功之后，才执行后续代码，因此可能存在阻塞问题！）
+
+  ````javascript
+  import foo from './foo.js'
+  ````
+
+* import ( ):
+
+  * 返回值是一个 Promise
+
+  * 示例：
+
+    ```javascript
+    import('./foo.js').then(res => {
+        console.log('res: ', res)
+    })
+    ```
+
+###### 4.4.5 ES Module 解析流程
+
+* ES Module 解析过程分为三个阶段：
+  * 阶段一：构建；根据地址查找 js 文件，并且下载，然后将其解析成模块记录
+  * 阶段二：实例化；对模块记录进行实例化，并且分配内存空间，解析模块导入和导出语句，把模块指向对应内存地址
+  * 阶段三：运行；运行代码，计算值，然后将值填充到内存地址中
+
+##### 4.5 CommonJS 与 ES Module 结合使用
+
+* 开发环境：
+  1. 浏览器（不支持）
+  2. node（根据 node 版本进行区分）
+  3. webpack（支持）
 
 
 
