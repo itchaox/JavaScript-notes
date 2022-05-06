@@ -1800,7 +1800,7 @@ let ns = new NewStudent()
 ns.running()  // 输出结果:running
 ```
 
-##### 4. JavaScript多态
+##### 4. JavaScript 多态
 
 * 多态:(英语:polymorphism)指为不同数据类型的实体提供统一的接口,或使用一个单一的符号来表示多个不同的类型
 
@@ -4756,4 +4756,165 @@ demo();
 * 概念：主要应用于浏览器的一种模块化规范
 * CMD：Common Module Definition（通用模块定义）的缩写
 * 采用异步加载模块
+
+##### 4.4 ES Module 规范
+
+* 概念：
+  1. export 负责将模块内容导出
+  2. import 负责从其他模块导入内容
+  3. 采用 ES Module 将自动开启严格模式：use strict（了解）
+
+* 导出：
+
+  1. export + 声明语句：
+
+     ```javascript
+     export const name = 'itchao'
+     export const age = 18
+     export const height = 1.88
+     ```
+
+  2. export 导出和声明语句分开：
+
+     ```javascript
+     const name = 'itchao'
+     const age = 18
+     const height = 1.88
+     
+     export {
+       name,
+       age,
+       height
+     }
+     ```
+
+  3. export 导出和声明语句分开（导出时起别名）：
+
+     ```javascript
+     const name = 'itchao'
+     const age = 18
+     const height = 1.88
+     
+     export {
+       name as fName,
+       age as fAge,
+       height as fHeight
+     }
+     ```
+
+  4. 默认导出：(默认导出只有一个)
+
+     ```javascript
+     // 方式一：
+     const name = 'itchao'
+     const age = 18
+     const height = 1.88
+     
+     export {
+       name,
+       age,
+       height as default
+     }
+     
+     // 方式二:
+     const name = 'itchao'
+     const age = 18
+     const height = 1.88
+     
+     export default name
+     ```
+
+* 导入：
+
+  1. 普通导入：
+
+     ```javascript
+     import { name , age, height } from './foo.js'
+     ```
+
+  2. 普通导入（导入时起别名）：
+
+     ```javascript
+     import { name as fName, age as fAge, height as fHeight } from './foo.js'
+     ```
+
+  3. 将导出所有内容放到一个标识符中：
+
+     ```javascript
+     import * as importObj from './foo.js'
+     ```
+
+  4. 默认导入：
+
+     ```javascript
+     import foo from './foo.js'
+     ```
+
+     
+
+* 导入和导出结合使用：（封装 utils 工具文件夹时，最好在里面创建一个 index.js 出口文件进行整合）
+
+  1. 先导入再导出：
+
+     ```javascript
+     import { add, sub } from './math.js'
+     import { timeFormat, priceFormat } from './format.js'
+     
+     export {
+       add,
+       sub,
+       timeFormat,
+       priceFormat
+     }
+     ```
+
+  2. 导入时直接导出：
+
+     ```javascript
+     export { add, sub } from './math.js'
+     export { timeFormat, priceFormat } from './format.js'
+     ```
+
+  3. 导入时直接全量导出：
+
+     ```javascript
+     export * from './math.js'
+     export * from './format.js'
+     ```
+
+* import 函数：
+
+  * 注意：（导入为同步执行代码，需要执行成功之后，才执行后续代码，因此可能存在阻塞问题！）
+
+    ````javascript
+    import foo from './foo.js'
+    ````
+
+  * import( ):
+
+    * 返回值是一个 Promise
+
+    * 示例：
+
+      ```javascript
+      import('./foo.js').then(res => {
+          console.log('res: ', res)
+      })
+      ```
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
