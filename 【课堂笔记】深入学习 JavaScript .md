@@ -3772,7 +3772,7 @@ pObj.name = 'coderwhy'
     console.log(Function.__proto__ === Function.prototype)  // true
     ```
 
-#### 原型和原型链 (重要):
+#### 原型和原型链 (重要)
 
 ##### 原型理解
 
@@ -3995,7 +3995,7 @@ console.log(obj.game)
     let foo2 = new foo()
     ```
 
-#### 面向对象的特性—继承:
+#### 面向对象的特性—继承
 
 ##### 继承概念
 
@@ -4919,6 +4919,38 @@ demo();
   1. 浏览器（不支持）
   2. node（根据 node 版本进行区分）
   3. webpack（支持）
+
+#### 浏览器 Node 事件循环（微任务_宏任务）
+
+* 事件循环概念：（包括微任务队列和宏任务队列）
+  1. js 单线程执行同步任务 
+  2. --(遇到异步任务)--> 放入其他线程执行
+  3.  --> 等待一段时间后，把其他线程放入到事件队列中 
+  4. --(同步任务执行完成之后)-->再把事件队列中的异步任务放到 js 单线程执行
+* 微任务队列（microtask queue）：
+  * 示例：Promise 的 then 回调、Mutation Observe API、queueMicrotask( ) 等
+* 宏任务队列（macrotask queue）：
+  * 规范：微任务队列清空后才开始执行宏任务
+  * 示例：ajax、setTimeout、setInterval、DOM 监听、UI Rendering 等
+* 事件循环执行顺序：
+  1. main script 中的代码优先执行（编写的顶层 script 代码）
+  2. 在执行每个宏任务之前，都会先查看微任务队列中是否有任务需要执行
+     * 执行宏任务之前，必须保证微任务队列为空
+     * 如果微任务队列不为空，则优先执行微任务队列中的微任务（回调），之后再开始执行宏任务
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
