@@ -4,7 +4,7 @@
  * @Author: wc
  * @Date: 2022-10-08 14:49:40
  * @LastEditors: wc
- * @LastEditTime: 2022-10-08 15:54:52
+ * @LastEditTime: 2022-10-08 16:09:48
  */
 
 const arr = [1, 2, 3];
@@ -45,3 +45,14 @@ let newArr = [...arr1, ...arr2];
 console.log(newArr);
 newArr[0].name = "change";
 console.log(arr1, newArr);
+
+// 生成器
+Number.prototype[Symbol.iterator] = function* () {
+  let i = 0;
+  let num = this.valueOf();
+  while (i < num) {
+    yield i++;
+  }
+};
+
+console.log([...5]);
