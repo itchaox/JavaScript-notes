@@ -1,3 +1,11 @@
+/*
+ * @desc: 
+ * @Version: v1.00
+ * @Author: wc
+ * @Date: 2022-09-28 22:42:42
+ * @LastEditors: wc
+ * @LastEditTime: 2022-12-28 13:26:56
+ */
 
 var player = {
   name:'kobe',

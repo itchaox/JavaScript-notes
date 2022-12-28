@@ -1,3 +1,11 @@
+/*
+ * @desc: 
+ * @Version: v1.00
+ * @Author: wc
+ * @Date: 2022-09-28 22:42:42
+ * @LastEditors: wc
+ * @LastEditTime: 2022-12-28 13:27:10
+ */
 var name = 'itchao'
 console.log(name)  // itchao
 console.log(num1)  // undefined
