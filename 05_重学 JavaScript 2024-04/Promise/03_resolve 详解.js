@@ -3,7 +3,7 @@
  * @Author     : itchaox
  * @Date       : 2024-04-24 22:26
  * @LastAuthor : itchaox
- * @LastTime   : 2024-04-24 23:12
+ * @LastTime   : 2024-04-25 11:14
  * @desc       :
  */
 
@@ -26,11 +26,11 @@ const promise = new Promise((resolve, reject) => {
   // resolve([11, 22, 33]);
 
   // 2. Promise
-  // FIXME： 相当于拦截操作，此 Promise 的状态由 resolve 参数 Promise 状态决定
+  // FIXME： 相当于拦截操作，此 Promise 的状态由 resolve 参数里面的 Promise 状态决定
   // resolve(newPromise);
 
   // 3. thenable
-  // FIXME： 拦截操作，此 Promise 的状态由 thenable 决定
+  // FIXME： 拦截操作，此 Promise 的状态由 thenable 的状态决定
   const obj = {
     // 此种展示方式即为 thenable
     then(resolve, reject) {
