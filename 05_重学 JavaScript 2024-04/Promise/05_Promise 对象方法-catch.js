@@ -1,7 +1,15 @@
+/*
+ * @Version    : v1.00
+ * @Author     : itchaox
+ * @Date       : 2024-04-25 23:36
+ * @LastAuthor : itchaox
+ * @LastTime   : 2024-04-26 23:00
+ * @desc       :
+ */
+
 const promise = new Promise((resolve, reject) => {
   // resolve(123);
-
-  reject('no err');
+  // reject('no err');
 });
 
 // FIXME: 报错，此处未 catch
