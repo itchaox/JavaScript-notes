@@ -3,7 +3,7 @@
  * @Author     : itchaox
  * @Date       : 2024-04-26 23:10
  * @LastAuthor : itchaox
- * @LastTime   : 2024-04-26 23:17
+ * @LastTime   : 2024-05-04 15:06
  * @desc       :
  */
 
@@ -15,6 +15,7 @@ const obj = {
 const p1 = Promise.resolve(obj);
 
 p1.then((res) => {
+  // res1 { name: 'aaa' }
   console.log('res1', res);
 });
 
@@ -26,33 +27,31 @@ const p2 = new Promise((resolve, reject) => {
 });
 
 p2.then((res) => {
+  // res2 { name: 'aaa' }
   console.log('res2', res);
 });
 
-// 2. 入参为 Promise
+// 2. 入参为 promise
 const p3 = new Promise((resolve, reject) => {
-  // resolve('123');
-
-  reject('err 123');
+  reject('promise');
 });
 
 const p4 = Promise.resolve(p3);
 
 p4.then(
   (res) => {
-    console.log('res4', res);
+    console.log('res', res);
   },
   (err) => {
-    console.log('err3', err);
+    // err promise
+    console.log('err', err);
   },
 );
 
 // 3. 入参为 thenable
 const thenObj = {
   then(resolve, reject) {
-    // resolve('thenObj res');
-
-    reject('err 02');
+    reject('thenable');
   },
 };
 
@@ -63,6 +62,7 @@ p5.then(
     console.log('res', res);
   },
   (err) => {
+    // err thenable
     console.log('err', err);
   },
 );
